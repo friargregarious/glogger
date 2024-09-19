@@ -1,1 +1,11 @@
-{"build_number": 2, "version_number": [0, 0, 2], "app_title": "Glogger", "developer": "Gregory Denyes", "dev_link": "https://github.com/friargregarious"}
+{
+   "build_number": 2,
+   "version_number": [
+      0,
+      0,
+      2
+   ],
+   "app_title": "Glogger",
+   "developer": "Gregory Denyes",
+   "dev_link": "https://github.com/friargregarious"
+}

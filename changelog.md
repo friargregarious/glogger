@@ -1,5 +1,11 @@
-# Changelog for CAF Feedback Generator
 
-<!--  NEW CHANGES   /-->
+-----------------------------------------
+# 
+-----------------------------------------
+## VERSION:  []
+**DATE:** 
+-----------------------------------------
+**CONTRIBUTORS:** 
 
-**GLogger created & maintained by:** [Gregory Denyes](https://github.com/friargregarious)
+
+-----------------------------------------
