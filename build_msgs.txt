@@ -3,90 +3,92 @@
   - setuptools >= 40.8.0
 * Getting build dependencies for sdist...
 running egg_info
-writing Glogger.egg-info\PKG-INFO
-writing dependency_links to Glogger.egg-info\dependency_links.txt
-writing entry points to Glogger.egg-info\entry_points.txt
-writing top-level names to Glogger.egg-info\top_level.txt
-reading manifest file 'Glogger.egg-info\SOURCES.txt'
-writing manifest file 'Glogger.egg-info\SOURCES.txt'
+creating GSLogger.egg-info
+writing GSLogger.egg-info\PKG-INFO
+writing dependency_links to GSLogger.egg-info\dependency_links.txt
+writing entry points to GSLogger.egg-info\entry_points.txt
+writing top-level names to GSLogger.egg-info\top_level.txt
+writing manifest file 'GSLogger.egg-info\SOURCES.txt'
+reading manifest file 'GSLogger.egg-info\SOURCES.txt'
+writing manifest file 'GSLogger.egg-info\SOURCES.txt'
 * Building sdist...
 running sdist
 running egg_info
-writing Glogger.egg-info\PKG-INFO
-writing dependency_links to Glogger.egg-info\dependency_links.txt
-writing entry points to Glogger.egg-info\entry_points.txt
-writing top-level names to Glogger.egg-info\top_level.txt
-reading manifest file 'Glogger.egg-info\SOURCES.txt'
-writing manifest file 'Glogger.egg-info\SOURCES.txt'
+writing GSLogger.egg-info\PKG-INFO
+writing dependency_links to GSLogger.egg-info\dependency_links.txt
+writing entry points to GSLogger.egg-info\entry_points.txt
+writing top-level names to GSLogger.egg-info\top_level.txt
+reading manifest file 'GSLogger.egg-info\SOURCES.txt'
+writing manifest file 'GSLogger.egg-info\SOURCES.txt'
 running check
-creating glogger-0.1.0
-creating glogger-0.1.0\Glogger.egg-info
-creating glogger-0.1.0\glogger
-copying files to glogger-0.1.0...
-copying README.md -> glogger-0.1.0
-copying setup.py -> glogger-0.1.0
-copying Glogger.egg-info\PKG-INFO -> glogger-0.1.0\Glogger.egg-info
-copying Glogger.egg-info\SOURCES.txt -> glogger-0.1.0\Glogger.egg-info
-copying Glogger.egg-info\dependency_links.txt -> glogger-0.1.0\Glogger.egg-info
-copying Glogger.egg-info\entry_points.txt -> glogger-0.1.0\Glogger.egg-info
-copying Glogger.egg-info\top_level.txt -> glogger-0.1.0\Glogger.egg-info
-copying glogger\__init__.py -> glogger-0.1.0\glogger
-copying glogger\glog.json -> glogger-0.1.0\glogger
-copying glogger\glog.py -> glogger-0.1.0\glogger
-copying Glogger.egg-info\SOURCES.txt -> glogger-0.1.0\Glogger.egg-info
-Writing glogger-0.1.0\setup.cfg
+creating gslogger-0.1.0
+creating gslogger-0.1.0\GSLogger.egg-info
+creating gslogger-0.1.0\gslogger
+copying files to gslogger-0.1.0...
+copying README.md -> gslogger-0.1.0
+copying setup.py -> gslogger-0.1.0
+copying GSLogger.egg-info\PKG-INFO -> gslogger-0.1.0\GSLogger.egg-info
+copying GSLogger.egg-info\SOURCES.txt -> gslogger-0.1.0\GSLogger.egg-info
+copying GSLogger.egg-info\dependency_links.txt -> gslogger-0.1.0\GSLogger.egg-info
+copying GSLogger.egg-info\entry_points.txt -> gslogger-0.1.0\GSLogger.egg-info
+copying GSLogger.egg-info\top_level.txt -> gslogger-0.1.0\GSLogger.egg-info
+copying gslogger\__init__.py -> gslogger-0.1.0\gslogger
+copying gslogger\glog.json -> gslogger-0.1.0\gslogger
+copying gslogger\glog.py -> gslogger-0.1.0\gslogger
+copying GSLogger.egg-info\SOURCES.txt -> gslogger-0.1.0\GSLogger.egg-info
+Writing gslogger-0.1.0\setup.cfg
 Creating tar archive
-removing 'glogger-0.1.0' (and everything under it)
+removing 'gslogger-0.1.0' (and everything under it)
 * Building wheel from sdist
 * Creating isolated environment: venv+pip...
 * Installing packages in isolated environment:
   - setuptools >= 40.8.0
 * Getting build dependencies for wheel...
 running egg_info
-writing Glogger.egg-info\PKG-INFO
-writing dependency_links to Glogger.egg-info\dependency_links.txt
-writing entry points to Glogger.egg-info\entry_points.txt
-writing top-level names to Glogger.egg-info\top_level.txt
-reading manifest file 'Glogger.egg-info\SOURCES.txt'
-writing manifest file 'Glogger.egg-info\SOURCES.txt'
+writing GSLogger.egg-info\PKG-INFO
+writing dependency_links to GSLogger.egg-info\dependency_links.txt
+writing entry points to GSLogger.egg-info\entry_points.txt
+writing top-level names to GSLogger.egg-info\top_level.txt
+reading manifest file 'GSLogger.egg-info\SOURCES.txt'
+writing manifest file 'GSLogger.egg-info\SOURCES.txt'
 * Building wheel...
 running bdist_wheel
 running build
 running build_py
-creating build\lib\glogger
-copying glogger\glog.py -> build\lib\glogger
-copying glogger\__init__.py -> build\lib\glogger
+creating build\lib\gslogger
+copying gslogger\glog.py -> build\lib\gslogger
+copying gslogger\__init__.py -> build\lib\gslogger
 installing to build\bdist.win-amd64\wheel
 running install
 running install_lib
 creating build\bdist.win-amd64\wheel
-creating build\bdist.win-amd64\wheel\glogger
-copying build\lib\glogger\glog.py -> build\bdist.win-amd64\wheel\.\glogger
-copying build\lib\glogger\__init__.py -> build\bdist.win-amd64\wheel\.\glogger
+creating build\bdist.win-amd64\wheel\gslogger
+copying build\lib\gslogger\glog.py -> build\bdist.win-amd64\wheel\.\gslogger
+copying build\lib\gslogger\__init__.py -> build\bdist.win-amd64\wheel\.\gslogger
 running install_data
-creating build\bdist.win-amd64\wheel\Glogger-0.1.0.data\data
-creating build\bdist.win-amd64\wheel\Glogger-0.1.0.data\data\glogger
-copying glogger\glog.json -> build\bdist.win-amd64\wheel\Glogger-0.1.0.data\data\glogger
+creating build\bdist.win-amd64\wheel\GSLogger-0.1.0.data\data
+creating build\bdist.win-amd64\wheel\GSLogger-0.1.0.data\data\gslogger
+copying gslogger\glog.json -> build\bdist.win-amd64\wheel\GSLogger-0.1.0.data\data\gslogger
 running install_egg_info
 running egg_info
-writing Glogger.egg-info\PKG-INFO
-writing dependency_links to Glogger.egg-info\dependency_links.txt
-writing entry points to Glogger.egg-info\entry_points.txt
-writing top-level names to Glogger.egg-info\top_level.txt
-reading manifest file 'Glogger.egg-info\SOURCES.txt'
-writing manifest file 'Glogger.egg-info\SOURCES.txt'
-Copying Glogger.egg-info to build\bdist.win-amd64\wheel\.\Glogger-0.1.0-py3.12.egg-info
+writing GSLogger.egg-info\PKG-INFO
+writing dependency_links to GSLogger.egg-info\dependency_links.txt
+writing entry points to GSLogger.egg-info\entry_points.txt
+writing top-level names to GSLogger.egg-info\top_level.txt
+reading manifest file 'GSLogger.egg-info\SOURCES.txt'
+writing manifest file 'GSLogger.egg-info\SOURCES.txt'
+Copying GSLogger.egg-info to build\bdist.win-amd64\wheel\.\GSLogger-0.1.0-py3.12.egg-info
 running install_scripts
-creating build\bdist.win-amd64\wheel\Glogger-0.1.0.dist-info\WHEEL
-creating 'D:\current_projects\glogger\dist\.tmp-2nz1qx2i\Glogger-0.1.0-py3-none-any.whl' and adding 'build\bdist.win-amd64\wheel' to it
-adding 'Glogger-0.1.0.data/data/glogger/glog.json'
-adding 'glogger/__init__.py'
-adding 'glogger/glog.py'
-adding 'Glogger-0.1.0.dist-info/METADATA'
-adding 'Glogger-0.1.0.dist-info/WHEEL'
-adding 'Glogger-0.1.0.dist-info/dependency_links.txt'
-adding 'Glogger-0.1.0.dist-info/entry_points.txt'
-adding 'Glogger-0.1.0.dist-info/top_level.txt'
-adding 'Glogger-0.1.0.dist-info/RECORD'
+creating build\bdist.win-amd64\wheel\GSLogger-0.1.0.dist-info\WHEEL
+creating 'D:\current_projects\glogger\dist\.tmp-ufrpaiu9\GSLogger-0.1.0-py3-none-any.whl' and adding 'build\bdist.win-amd64\wheel' to it
+adding 'GSLogger-0.1.0.data/data/gslogger/glog.json'
+adding 'gslogger/__init__.py'
+adding 'gslogger/glog.py'
+adding 'GSLogger-0.1.0.dist-info/METADATA'
+adding 'GSLogger-0.1.0.dist-info/WHEEL'
+adding 'GSLogger-0.1.0.dist-info/dependency_links.txt'
+adding 'GSLogger-0.1.0.dist-info/entry_points.txt'
+adding 'GSLogger-0.1.0.dist-info/top_level.txt'
+adding 'GSLogger-0.1.0.dist-info/RECORD'
 removing build\bdist.win-amd64\wheel
-Successfully built glogger-0.1.0.tar.gz and Glogger-0.1.0-py3-none-any.whl
+Successfully built gslogger-0.1.0.tar.gz and GSLogger-0.1.0-py3-none-any.whl

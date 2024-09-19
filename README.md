@@ -1,4 +1,4 @@
-# GLogger Changelog Generator
+# GSLogger: Greg's Simple Changelog Generator
 
 A Python-based tool for generating changelogs in Markdown format.
 created by: [Friar Greg Denyes](https://github.com/friargregarious)
