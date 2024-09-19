@@ -2,6 +2,11 @@
 
 A Python-based tool for generating changelogs in Markdown format.
 created by: [Friar Greg Denyes](https://github.com/friargregarious)
+Licensed under: Apache License Version 2.0
+Can be found at
+PyPi: https://pypi.org/project/GSLogger/0.1.0/ 
+and 
+Github: https://github.com/friargregarious/glogger
 
 ## Features
 
