@@ -101,7 +101,7 @@ def create_artifact():
     artifact_type = chtypes[selection - 1]
 
     # Get the commit message from the user
-    artifact_message = input(f"Enter the commit message: \n{artifact_type}> ".strip())
+    artifact_message = input(f"Enter the commit message (include --r or --f to initiate semantic versioning): \n{artifact_type}> ".strip())
     if artifact_message == "":
         print("Empty commit message, exiting without changes.")
         exit(1)
@@ -130,12 +130,12 @@ def create_artifact():
 def semantic_versioning(build, version, content):
     build += 1
 
-    if "new release version" in content.lower():
+    if "--r" in content.lower():
         version[0] += 1
         version[1] = 0
         version[2] = 0
     
-    elif "new feature version" in content.lower():
+    elif "--f" in content.lower():
         version[1] += 1
         version[2] = 0
     
@@ -154,6 +154,10 @@ def collect_changelogs(data):
 
     # Get the list of changelog files
     changelog_files = [f for f in os.listdir(output_folder) if f.endswith(".md")]
+
+    if len(changelog_files) == 0:
+        print("No changelog files found. Exiting without changes.")
+        exit(0)
 
     # Sort the changelog files by date
     # changelog_files.sort(key=lambda f: datetime.datetime.strptime(f.split("-")[1].split(".")[0], "%Y-%m-%d-%H-%M"))
@@ -175,61 +179,68 @@ def collect_changelogs(data):
         
         _, a_type, a_msg, a_dev = content.splitlines()
 
-        changes[a_type.upper()].append(a_msg)
-        contributors.add(a_dev) # add this dev to the set of contributors
-
         build_number, version_number = semantic_versioning(build_number, version_number, content)
-
-
-    # Append the new build and version numbers to the changelog
-
-
-    context = {
-        "build_number": build_number,
-        "version_number": ".".join(str(x) for x in version_number),
-        "date": date("ymd"),
-        "title": f"Changelog for Application: {data['app_title']}",
-        "changes": {x:y for x, y in changes.items() if y},
-        "contributors": list( sorted(contributors)    )
-    }
-
-    # template = Template(changelog_template)
-    with open("template.md", "r") as f:
-        # template_text = Template(f.read())
-        output = Template(f.read()).render(**context)
-
-    ##############################################        DEBUGING PRINTS
-    os.system("cls")
-    for x, y in context.items():
-        print(x, y)
-
-    
-    # print("X"*40+"\n\n")
-    # print(output)
-    with open("changelog.md", "w") as f:
-        f.write(output)
-    exit(0)
-    
-    ##############################################        DEBUGING PRINTS
-
-    
-
+        replaced_content = content.replace("--f", "new feature version").replace("--r", "new release version")
+        
+        changes[a_type.upper()].append(replaced_content.strip().capitalize())
+        contributors.add(a_dev.strip()) # add this dev to the set of contributors
 
     # updatate the changelog json
     data["build_number"] = build_number
     data["version_number"] = version_number
 
-    data = save_config(data)
+    save_config(data)
 
-    # Write the new changelog content to the file
-    with open(changelog_file, "w") as f:
-        f.write(new_changelog_content)
+    try:
+        # gather the header and metadata for the changelog
+        context = {
+            "build_number": build_number,
+            "version_number": ".".join(str(x) for x in version_number),
+            "date": date("ymd"),
+            "title": f"Changelog for Application: {data['app_title']}",
+            "contributors": ",".join(sorted(contributors)),
+        }
 
-    print(f"Changelog updated: {changelog_file}")
+        # build the header and metadata portion of the changelog
+        with open("template.md", "r") as f:
+            output = Template(f.read()).render(**context)
+        print(f"Changelog Header: Successfully created.")
+        
+        # assemble the sections data & template of the changelog
+        changes = {x:y for x, y in changes.items() if y}
+        sect_temp = Template(open("template_sections.md", "r").read())
+
+        # append the populated sections to the changelog
+        for sect, chgs in changes.items():
+            this_sect = sect_temp.render(artifact_type=sect, artifact_list=chgs)
+            output += this_sect
+        print(f"Changelog Sections: Successfully created.")
+        print(f"Changelog Text: Successfully created.")
+        
+    except Exception as e:
+        print(f"Error building changelog text: {e}")
 
 
+    try:
+        # append the previous changelog content
+        with open(changelog_file, "r") as f:
+            output += f.read()
 
-if __name__ == "__main__":
+        # Write the new changelog content back to file
+        with open(changelog_file, "w") as f:
+            f.write(output)
+
+        print(f"Changelog updated: {changelog_file}")
+
+        # remove old changelogs
+        for file in changelog_files:
+            os.remove(os.path.join(output_folder, file))
+
+    except Exception as e:
+        print(f"Error updating changelog: {e}")
+
+
+def main():
     parser = argparse.ArgumentParser(description="Changelog generator")
     parser.add_argument("-c", "--collect", action="store_true", help="Collect existing changelogs and update the main changelog file")
     args = parser.parse_args()
@@ -238,3 +249,6 @@ if __name__ == "__main__":
         collect_changelogs(data)
     else:
         create_artifact()
+
+if __name__ == "__main__":
+    main()

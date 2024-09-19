@@ -14,7 +14,13 @@ created by: [Friar Greg Denyes](https://github.com/friargregarious)
 To use the changelog generator, simply run the ```chlog.py``` script or run it from the command prompt and follow the prompts.
 
 ```cmd
-c:\myproject>chlog
+c:\myproject>glog
+```
+
+For collecting artifacts and building the changelog.md file, use the ```-c``` flag like so:
+
+```cmd
+c:\myproject>glog -c
 ```
 
 *Note: runing from command prompt will be a future feature once the app packaging/building functionality is complete.*
