@@ -1,5 +1,5 @@
 .venv
 dist/*
-Glogger.egg-info/*
+GSLogger.egg-info/*
 build_msgs.txt
 

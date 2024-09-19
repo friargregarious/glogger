@@ -9,10 +9,10 @@ long_description = (here / "README.md").read_text(encoding="utf-8")
 
 data_files = [('gslogger', ['gslogger/glog.json'])]
 
-# with open("gslogger/glog.json", "r", encoding="utf-8") as f:
-#     data = json.loads(f.read())
+with open("gslogger/glog.json", "r", encoding="utf-8") as f:
+    data = json.loads(f.read())
 
-data = json.loads((here / "gslogger" / "glog.json").read_text(encoding="utf-8"))
+# data = json.loads((here / "gslogger" / "glog.json").read_text(encoding="utf-8"))
 
 setup(
     name=data['app_title'],
@@ -23,41 +23,32 @@ setup(
     url="https://github.com/friargregarious/glogger",
     author="Friar Gregory Denyes",
     author_email="greg.denyes@gmail.com",
-
-
-
     classifiers=[
             # How mature is this project? Common values are
             #   3 - Alpha
             #   4 - Beta
             #   5 - Production/Stable
             "Development Status :: 3 - Alpha",
-            # Indicate who your project is intended for
             "Intended Audience :: Developers",
             "Topic :: Software Development :: Build Tools",
-            # Pick your license as you wish
-            "License :: OSI Approved :: Apache License",
-            # Specify the Python versions you support here. In particular, ensure
-            # that you indicate you support Python 3. These classifiers are *not*
-            # checked by 'pip install'. See instead 'python_requires' below.
+            "License :: OSI Approved :: Apache Software License",
+            # "License-Expression: MIT AND (Apache-2.0 OR BSD-2-Clause)",
             "Programming Language :: Python :: 3",
             "Programming Language :: Python :: 3.10",
             "Programming Language :: Python :: 3.11",
             "Programming Language :: Python :: 3.12",
-            "Programming Language :: Python :: 3 :: Only",
         ],
-
     # This field adds keywords for your project which will appear on the
     # project page. What does your project relate to?
     keywords="project, changelog, development",
     packages=find_packages(),
     python_requires=">=3.10, <4",
     install_requires=['jinja2'],        # List your package dependencies here
-    package_data={
-        "data": ["gslogger/glog.json"],
-    },
+    # package_data={
+    #     "data": ["gslogger/glog.json"],
+    # },
    
-    # data_files=data_files,
+    data_files=data_files,
     # dependency_links=['jinja2'],
     entry_points={
         'console_scripts': [
