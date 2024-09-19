@@ -1,0 +1,5 @@
+.venv
+dist/*
+Glogger.egg-info/*
+build_msgs.txt
+
