@@ -3,6 +3,7 @@ import datetime
 import argparse
 import json
 from jinja2 import Template
+import pathlib
 
 # Get the current date and time
 def date(reporting=None)->str:
@@ -23,28 +24,62 @@ def save_config(data:json)->bool:
     :return: True if the save is successful, False otherwise
     """
     try:
-        with open("glog.json", "w") as f:
+        with open(PATH / "glog.json", "w") as f:
             json.dump(data, f, indent=3)
         return True
     
     except Exception as e:
         print(f"Error saving glog.json: {e}")
         return False
-    
-    
-# Constants and templates
-# initialize local data for GLogger if not present
 
-output_folder = "ch-logs"  # Set the output folder
-chtypes = ["ADDED", "CHANGED", "DELETED", "REMOVED", "FIXED", "SECURITY"]
+def get_template_files(template_folder):
+    """
+    Retrieves the template files, creating them if they do not exist.
+
+    :param template_folder: The folder where the template files are located
+    :return: A tuple containing the header and sections template text
+    """
+    # template header ############
+    if not os.path.exists(template_folder / "template.md"):
+        TEMPLATE_INTRO = "\n---\n# {{ title }}\n\nVersion: {{ version_number }} | {{ date }} | Build: {{ build_number }}\n\nCONTRIBUTORS: {{ contributors }}\n\n"
+        print("Changelog template.md not found. Creating file.")
+
+        with open(template_folder / "template_sections.md", "w") as f:
+            f.write(TEMPLATE_INTRO)
+
+    with open(template_folder / "template.md", "r") as f:
+        header = f.read()
+
+    # template sections ###########
+    if not os.path.exists(template_folder / "template_section.md"):
+        TEMPLATE_SECTIONS = "\n## [ {{ artifact_type }} ]\n\n{% for artifact in artifact_list %}   * {{ artifact }}\n{% endfor %}\n\n"
+        print("Changelog template_sections.md not found. Creating file.")
+        
+        with open(template_folder / "template_section.md", "w") as f:
+            f.write(TEMPLATE_SECTIONS)
+
+    with open(template_folder / "template_sections.md", "r") as f:
+        sections = f.read()
+    
+    return header, sections
+
+
+# Constants and templates ################################################
+CHTYPES = ["ADDED", "CHANGED", "DELETED", "REMOVED", "FIXED", "SECURITY"]
+
+# get the current working directory
+PATH = pathlib.Path.cwd()
+
+# initialize local data for GLogger if not present
+OUTPUT_FOLDER = PATH / "ch-logs"  # Set the output folder
 
 # Create the output folder if it doesn't exist
-if not os.path.exists(output_folder):
-    os.makedirs(output_folder)
+if not os.path.exists(OUTPUT_FOLDER):
+    os.makedirs(OUTPUT_FOLDER)
 
 try:
     # Load the JSON data
-    with open("glog.json", "r") as f:
+    with open(PATH / "glog.json", "r") as f:
         data = json.load(f)    
 except:
     # or Initialize the JSON data
@@ -79,26 +114,26 @@ chlog_title = f"# Changelog for {app_title}\n\n"
 chlog_footer = f"# **GLogger created & maintained by:** [{developer}]({dev_link})"
 anchor = "\n\n<!--  NEW CHANGES   /-->\n\n"
 
-changelog_file = "changelog.md" # Set the changelog file
+changelog_file = PATH / "changelog.md" # Set the changelog file
+
 if not os.path.exists(changelog_file):
     with open(changelog_file, "w") as f:
         f.write(chlog_title)
         f.write(anchor)
         f.write(chlog_footer)
 
-
 def create_artifact():
     os.system("cls")
 
     # get the changelog type
-    for i, a in enumerate(chtypes):
+    for i, a in enumerate(CHTYPES):
         print(f"{i+1}. {a}")
         
     selection = int(input(f"Enter the log type: \n> ").strip())
-    if selection > len(chtypes) or selection < 1:
+    if selection > len(CHTYPES) or selection < 1:
         print("Invalid selection, exiting without changes.")
         exit(1)
-    artifact_type = chtypes[selection - 1]
+    artifact_type = CHTYPES[selection - 1]
 
     # Get the commit message from the user
     artifact_message = input(f"Enter the commit message (include --r or --f to initiate semantic versioning): \n{artifact_type}> ".strip())
@@ -111,7 +146,7 @@ def create_artifact():
         raise ValueError("Entry must be at least 10 characters long")
 
     # Create the changelog file name
-    artifact_file = f"{output_folder}/{date()}-{artifact_type}.md"
+    artifact_file = f"{OUTPUT_FOLDER}/{date()}-{artifact_type}.md"
 
     # Create the changelog file
     try:
@@ -153,7 +188,7 @@ def collect_changelogs(data):
     version_number:list = data["version_number"] # [0, 0, 0]
 
     # Get the list of changelog files
-    changelog_files = [f for f in os.listdir(output_folder) if f.endswith(".md")]
+    changelog_files = [f for f in os.listdir(OUTPUT_FOLDER) if f.endswith(".md")]
 
     if len(changelog_files) == 0:
         print("No changelog files found. Exiting without changes.")
@@ -168,13 +203,13 @@ def collect_changelogs(data):
     #     old_changelog_content = "\n" + f.read()
 
     context = {}
-    changes = {x.upper(): [] for x in chtypes}
+    changes = {x.upper(): [] for x in CHTYPES}
     contributors = set()
     
     # Iterate over the sorted changelog files
     for file in changelog_files:
         # Read the file content
-        with open(os.path.join(output_folder, file), "r") as f:
+        with open(os.path.join(OUTPUT_FOLDER, file), "r") as f:
             content = f.read()
         
         _, a_type, a_msg, a_dev = content.splitlines()
@@ -190,7 +225,10 @@ def collect_changelogs(data):
     data["version_number"] = version_number
 
     save_config(data)
-
+    
+    # Check for template files, they might not get installed for some reason
+    part1, part2 = get_template_files(PATH)
+            
     try:
         # gather the header and metadata for the changelog
         context = {
@@ -202,18 +240,18 @@ def collect_changelogs(data):
         }
 
         # build the header and metadata portion of the changelog
-        with open("template.md", "r") as f:
-            output = Template(f.read()).render(**context)
+        output = Template(part1).render(**context)
         print(f"Changelog Header: Successfully created.")
         
         # assemble the sections data & template of the changelog
         changes = {x:y for x, y in changes.items() if y}
-        sect_temp = Template(open("template_sections.md", "r").read())
+        sect_temp = Template(part2)
 
         # append the populated sections to the changelog
         for sect, chgs in changes.items():
             this_sect = sect_temp.render(artifact_type=sect, artifact_list=chgs)
             output += this_sect
+
         print(f"Changelog Sections: Successfully created.")
         print(f"Changelog Text: Successfully created.")
         
@@ -232,9 +270,10 @@ def collect_changelogs(data):
 
         print(f"Changelog updated: {changelog_file}")
 
-        # remove old changelogs
+        # remove old changelogs 
         for file in changelog_files:
-            os.remove(os.path.join(output_folder, file))
+            # TODO: replace os.path with pathlib
+            os.remove(os.path.join(OUTPUT_FOLDER, file))
 
     except Exception as e:
         print(f"Error updating changelog: {e}")
