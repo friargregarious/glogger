@@ -1,18 +1,25 @@
 import json
 from setuptools import setup, find_packages
 import pathlib
+import tomllib as tom
 
 here = pathlib.Path(__file__).parent.resolve()
 
 # Get the long description from the README file
 long_description = (here / "README.md").read_text(encoding="utf-8")
 
-data_files = [('gslogger', ['gslogger/glog.json'])]
+data_files = [
+    (
+        'gslogger', [
+            'gslogger/glog.toml',
+            'gslogger/template.md', 
+            'gslogger/template_sections.md',
+            'gslogger/changelog.md', 
+            ]
+        )
+    ]
 
-with open("gslogger/glog.json", "r", encoding="utf-8") as f:
-    data = json.loads(f.read())
-
-# data = json.loads((here / "gslogger" / "glog.json").read_text(encoding="utf-8"))
+data = tom.load(here / "gslogger" / "gslog.toml")
 
 setup(
     name=data['app_title'],
