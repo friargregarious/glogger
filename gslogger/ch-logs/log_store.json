@@ -1,14 +1,14 @@
 {
     "doc_parts": {
         "doc_header": "# Changelog: {{ app_title }}\n\n",
-        "futures_details": "## [ ISSUES & FUTURE CHANGES ]{% for artifact in artifact_list %}\n* {{ artifact }}{% endfor %}\n\n",
+        "futures_details": "\n## [ ISSUES & FUTURE CHANGES ]\n{% for artifact in artifact_list %}\n* {{ artifact }}{% endfor %}\n",
         "futures": [
             "1 - Future updates will be included under doc header, before versions details.",
             "2 - Need to package a new release as soon as output changelog is working"
         ],
-        "log_header": "## Version: {{ version_number }} | {{ date }} | Build: {{ build_number }}\n\nCONTRIBUTORS: {{ contributors }}\n\n",
-        "log_details": "### [ {{ artifact_type }} ]{% for artifact in artifact_list %}\n* {{ artifact }}{% endfor %}\n\n",
-        "doc_footer": "--- This Changelog Maintained by (Greg's Simple Changelogger)['https://github.com/friargregarious/glogger'] ---"
+        "log_header": "\n## Version: {{ version_number }} | {{ date }} | Build: {{ build_number }}\n\nCONTRIBUTORS: {{ contributors }}\n",
+        "log_details": "\n### [ {{ artifact_type }} ]\n{% for artifact in artifact_list %}\n* {{ artifact }}{% endfor %}\n",
+        "doc_footer": "\n\n***This Changelog Maintained by [Greg's Simple Changelogger](https://github.com/friargregarious/glogger)***"
     },
     "details": [
         {
