@@ -1,8 +1,8 @@
 [app]
 app_title = "GSLogger"
-version_number = [ 0, 2, 43,]
-build_number = 96
-futures = 0
+version_number = [ 0, 2, 58,]
+build_number = 111
+f_count = 3
 atf_pattern = ".txt"
 
 [dev]

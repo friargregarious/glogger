@@ -1,4 +1,0 @@
-2024-09-24-13-22
-ADDED
-now including FUTURE UPDATES to standard artifact types. will not include these in details.
-Gregory Denyes <Greg.Denyes@gmail.com>

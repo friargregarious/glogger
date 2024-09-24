@@ -11,9 +11,6 @@ try:
 except ModuleNotFoundError:
     import tomli as tom
 
-# PATH = pathlib.Path(__file__).parent.resolve()
-
-
 # Get the current date and time
 def date(reporting=None) -> str:
     """
@@ -323,15 +320,16 @@ def collect_changelogs(data):
             "logs": {x: y for x, y in changes.items() if y}
                     }
         
-        LOG_FILE = OUTPUT_FOLDER / "templates.json"
+        LOG_FILE = OUTPUT_FOLDER / "log_store.json"
 
         with open(LOG_FILE, "r", encoding="utf-8") as fs:
             log_store = dict(json.loads(fs.read()))
 
+        # collect future updates and store in log store
         if len(future_changes) > 0:
-            f_count = data["app"]["future_count"] + 1
+            f_count = data["app"]["f_count"] + 1
             future_changes = [f"{f} - {x}" for f, x in enumerate(future_changes, start=f_count)]
-            data["app"]["future_count"] = f_count + len(future_changes)
+            data["app"]["f_count"] = f_count + len(future_changes)
 
             # refresh_config data
             save_config(data, CONFIG_FILE)
@@ -340,8 +338,7 @@ def collect_changelogs(data):
             if "futures" not in log_store["doc_parts"] or log_store["doc_parts"]["futures"] is None:
                 log_store["doc_parts"]["futures"] = sorted(future_changes)
             else:
-                future_changes.extend(log_store["doc_parts"]["futures"])
-                
+                future_changes.extend(log_store["doc_parts"]["futures"])               
                 log_store["doc_parts"]["futures"] = sorted(future_changes)
 
         old_logs = log_store["details"]
@@ -359,7 +356,7 @@ def collect_changelogs(data):
         # remove old changelogs
         for file in changelog_files:
             # TODO: replace os.path with pathlib
-            os.remove(OUTPUT_FOLDER / file)  # commenting until fixed templates.json update
+            os.remove(OUTPUT_FOLDER / file)
             print(f"Archived artifact {file} successfully removed.")
 
     except Exception as e:
@@ -372,64 +369,72 @@ def generate_document():
 
     :param context: The data to populate the changelog template with
     """
-    with open(OUTPUT_FOLDER / "templates.json", "r") as fs:
+    with open(OUTPUT_FOLDER / "log_store.json", "r") as fs:
         context = dict(json.loads(fs.read()))
 
     # context.extend(dict(data))
 
-    OUTPUT_FILE = OUTPUT_FOLDER / "changelog.md"
+    OUTPUT_FILE = PATH / "changelog.md"
     print(f"Generating Changelog File: {OUTPUT_FILE}")
-
-    temp_doc_header = context["doc_parts"]["doc_header"]
-
-
 
     doc_footer = context["doc_parts"]["doc_footer"]
     
-
-
     # build the header and metadata portion of the changelog
     try:
+        temp_doc_header = context["doc_parts"]["doc_header"]
         output = Template(temp_doc_header).render(**data["app"])
         print(f"Changelog HEADER: Successfully created.")
+    except Exception as e:
+        print(f"Changelog HEADER: Error: {e}")
 
+    # FUTURES are details only found under the main heading
+    try:
         temp_futures = context["doc_parts"]["futures_details"]
         futures = context["doc_parts"]["futures"]
-        output += Template(temp_futures).render(**futures)
+        output += Template(temp_futures).render(artifact_list=futures)
         print(f"Changelog FUTURES: Successfully created.")
+
+    except Exception as e:
+        print(f"Changelog FUTURES: Error: {e}")
     
-        # assemble the sections data & template of the changelog
-        temp_ver_header = context["doc_parts"]["log_header"]
-        details = context["doc_parts"]["ch_type_details"]
+    # assemble the versions data & template of the changelog
+    temp_ver_header = context["doc_parts"]["log_header"]
+    temp_ver_details = context["doc_parts"]["log_details"]
 
-        for ver in context["details"]:
-            output += Template(temp_ver_header).render(**[ver]) 
+    print(f"Changelog Version Templates: Successfully loaded.")
+    
+        # append the version header to the changelog
+    for ver in context["details"]:
+        try:
+            ver_context = {
+                "version_number": ver["version_number"],
+                "date": ver["date"],
+                "build_number": ver["build_number"],
+                "contributors": ver["contributors"],
+            }
+            output += Template(temp_ver_header).render(**ver_context)
+            print(f"Changelog version header {ver['version_number']}: Successfully appended.")
             
-            for detail in ver["logs"]:
-                output += Template(details).render(**detail)
-            
-            for artifact_type, artifact_list in ver["logs"].items():
-                output += sect_temp.render(artifact_type, artifact_list)
+            for a_type, a_list in ver["logs"].items():
+                output += Template(temp_ver_details).render(artifact_type=a_type, artifact_list=a_list)
 
-            print(f"Changelog version {ver['version_number']} Successfully created.")
+        except Exception as e:
+            print(f"Changelog Versions  Error: {e}")
+
+        print(f"Changelog version {ver['version_number']} Successfully created.")
 
 
-        # append the populated sections to the changelog
-
+    try:    
         # last line of the changelog
         output += doc_footer
         
         print(f"Changelog Text: Successfully created.")
 
     except Exception as e:
-        print(f"Error building changelog text: {e}")
+        print(f"Error adding footer: {e}")
 
     try:
-        # # append the previous changelog content
-        # with open(OUTPUT_FILE, "r") as f:
-        #     output += f.read()
-
-        # Write the new changelog content back to file
+        # Write the new changelog content to file
         with open(OUTPUT_FILE, "w") as f:
             f.write(output)
 
@@ -448,10 +453,22 @@ def main():
         action="store_true",
         help="Collect existing changelogs and update the main changelog file",
     )
+    
+    parser.add_argument(
+        "-g",
+        "--generate",
+        action="store_true",
+        help="Generate Changelog file from collected data.",
+    )
+
     args = parser.parse_args()
 
     if args.collect:
         collect_changelogs(data)
+
+    elif args.generate:
+        generate_document()
+
     else:
         create_artifact()
 
