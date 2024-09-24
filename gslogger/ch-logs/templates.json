@@ -3,6 +3,7 @@
         "doc_header": "# Changelog: {{ app_title }}",
         "log_header": "## Version: {{ version_number }} | {{ date }} | Build: {{ build_number }}\n\nCONTRIBUTORS: {{ contributors }}\n\n",
         "ch_type_details": "### [ {{ artifact_type }} ]{% for artifact in artifact_list %}* {{ artifact }}{% endfor %}",
+        "futures_details": "## [ ISSUES & FUTURE CHANGES ]{% for artifact in artifact_list %}* {{ artifact }}{% endfor %}",
         "doc_footer": "--- This Changelog Maintained by (Greg's Simple Changelogger)['https://github.com/friargregarious/glogger'] ---"
     },
     "details": [

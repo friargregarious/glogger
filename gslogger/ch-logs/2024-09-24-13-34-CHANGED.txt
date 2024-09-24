@@ -1,0 +1,4 @@
+2024-09-24-13-34
+CHANGED
+artifacts now use .txt extension as they don't contain any markup formatting.
+Gregory Denyes <Greg.Denyes@gmail.com>

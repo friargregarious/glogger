@@ -2,6 +2,8 @@
 app_title = "GSLogger"
 version_number = [ 0, 2, 43,]
 build_number = 96
+futures = 0
+atf_pattern = ".txt"
 
 [dev]
 developer = "Gregory Denyes"
