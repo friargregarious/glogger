@@ -5,6 +5,16 @@ import json
 from jinja2 import Template
 import pathlib
 
+try:
+    # if python version >= 3.11
+    import tomllib as tom
+except ModuleNotFoundError:
+    import tomli as tom
+
+PATH = pathlib.Path(__file__).parent.resolve()
+
+
+
 # Get the current date and time
 def date(reporting=None)->str:
     """

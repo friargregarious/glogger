@@ -1,4 +1,6 @@
 .venv
+.junk
+
 dist/*
 GSLogger.egg-info/*
 build_msgs.txt
