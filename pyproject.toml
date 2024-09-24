@@ -45,14 +45,19 @@
     ]
 
 [project.urls]
-    Homepage = https://github.com/friargregarious/glogger
-    Repository = https://github.com/friargregarious/glogger.git
-    Documentation = https://github.com/friargregarious/glogger/blob/main/README.md
-    Issues = https://github.com/friargregarious/glogger/issues
-    Changelog = https://github.com/friargregarious/glogger/blob/main/changelog.md
-    Funding = https://paypal.me/friargreg?country.x=CA&locale.x=en_US
-    "Say Thanks!" = https://mastodon.social/@gregarious
+    Homepage = "https://github.com/friargregarious/glogger"
+    Repository = "https://github.com/friargregarious/glogger.git"
+    Documentation = "https://github.com/friargregarious/glogger/blob/main/README.md"
+    Issues = "https://github.com/friargregarious/glogger/issues"
+    Changelog = "https://github.com/friargregarious/glogger/blob/main/changelog.md"
+    Funding = "https://paypal.me/friargreg?country.x=CA&locale.x=en_US"
+    "Say Thanks!" = "https://mastodon.social/@gregarious"
 
 [project.entry-points."console_scripts"]
-    # tomatoes = "spam:main_tomatoes"
     glog = "gslogger.glog:main"
+
+[tool.black]
+    line-length = 88
+
+[tool.isort]
+    profile = "black"
