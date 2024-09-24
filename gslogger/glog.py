@@ -4,12 +4,8 @@ import argparse
 import json
 from jinja2 import Template
 import pathlib
+import toml
 
-try:
-    # if python version >= 3.11
-    import toml as tom
-except ModuleNotFoundError:
-    import tomli as tom
 
 # Get the current date and time
 def date(reporting=None) -> str:
@@ -22,6 +18,7 @@ def date(reporting=None) -> str:
         return datetime.datetime.now().strftime("%Y-%m-%d")
     return datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
 
+
 def save_config(data, target) -> None:
     """
     Saves the configuration to a file named "glog.toml".
@@ -32,9 +29,8 @@ def save_config(data, target) -> None:
     try:
         # with open(PATH / "glog.toml", "wb") as toml_file:
         with open(target, "w") as toml_file:
-            tom.dump(data, toml_file)
+            toml.dump(data, toml_file)
         print(f"save_config: Success saved {target}.")
-        
 
     except Exception as e:
         print(f"save_config: Error saving glog.json: {e}")
@@ -44,26 +40,26 @@ def get_config(src) -> dict:
 
     try:
         with open(src, "r", encoding="utf-8") as toml_file:
-            config_data = tom.loads(toml_file.read())
+            config_data = toml.loads(toml_file.read())
             print(f"get_config: successfully loaded {src}")
-        
+
             return config_data
 
     except Exception as e:
         print(f"get_config: Error loading {src}: {e}")
         print(f"get_config: rebuilding default config {src}.")
-        
+
         raw = {
             "app": {
                 "version_number": [0, 0, 0],
                 "build_number": 0,
-                }
             }
+        }
 
         save_config(raw, src)
 
-        with open(CONFIG_FILE,"r", encoding="utf-8") as fs:
-            config_data = tom.loads(fs.read())
+        with open(CONFIG_FILE, "r", encoding="utf-8") as fs:
+            config_data = toml.loads(fs.read())
 
         return config_data
 
@@ -87,11 +83,11 @@ def get_template_files(template_folder):
     try:
         with open(HEADER_FILE, "r") as fs:
             header = fs.read()
-            
+
     except Exception as e:
         print(f"failed to open header template, building file. Error:", e)
-        
-        TEMPLATE_INTRO = "\n---\n# {{ title }}\n\nVersion: {{ version_number }} " 
+
+        TEMPLATE_INTRO = "\n---\n# {{ title }}\n\nVersion: {{ version_number }} "
         TEMPLATE_INTRO += "| {{ date }} | Build: {{ build_number }}\n\n"
         TEMPLATE_INTRO += "CONTRIBUTORS: {{ contributors }}\n\n"
         print("Changelog template.md not found. Creating file.")
@@ -107,7 +103,7 @@ def get_template_files(template_folder):
     # ## [ ADDED ]
     # * this is a line of text under the added header.
     # * added template check,...
-    
+
     if not os.path.exists(SECTION_FILE):
         TEMPLATE_SECTIONS = "\n## [ {{ artifact_type }} ]\n\n{% for artifact in artifact_list %}   * {{ artifact }}\n{% endfor %}\n\n"
         print("Changelog template_sections.md not found. Creating file.")
@@ -179,14 +175,15 @@ else:
 save_config(data, CONFIG_FILE)
 data = get_config(CONFIG_FILE)
 
-def create_artifact()->None:
-    """
-    Prompts the user to create a new changelog artifact. 
 
-    First, the user is asked to select the type of changelog artifact to create. 
+def create_artifact() -> None:
+    """
+    Prompts the user to create a new changelog artifact.
+
+    First, the user is asked to select the type of changelog artifact to create.
     This is done by providing a list of available types (ADDED, CHANGED, DELETED, REMOVED, FIXED, SECURITY, FUTURE UPDATES).
 
-    Next, the user is asked to provide a commit message that will be used to describe the changes made in the changelog artifact. 
+    Next, the user is asked to provide a commit message that will be used to describe the changes made in the changelog artifact.
     This message should be at least 10 characters long.
 
     If the user enters "--r" or "--f" in the commit message, the version number will be incremented accordingly.
@@ -218,7 +215,9 @@ def create_artifact()->None:
         raise ValueError("Entry must be at least 10 characters long")
 
     # Create the changelog file name
-    artifact_file = f"{OUTPUT_FOLDER}/{date()}-{artifact_type}{data["app"]["atf_pattern"]}"
+    artifact_file = (
+        f"{OUTPUT_FOLDER}/{date()}-{artifact_type}{data["app"]["atf_pattern"]}"
+    )
     contrib_line = f"{data["dev"]['developer']} <{data["dev"]['dev_email']}>"
     # Create the changelog file
     try:
@@ -235,7 +234,7 @@ def create_artifact()->None:
 
 
 def semantic_versioning(build, version, content):
-    
+
     build += 1
 
     if "--r" in content.lower():
@@ -253,11 +252,11 @@ def semantic_versioning(build, version, content):
 
     return build, version
 
+
 def v_num_str(version):
     return ".".join([str(x) for x in version])
-    
-    
-    
+
+
 def collect_changelogs(data):
 
     # Get the current build and version numbers
@@ -265,7 +264,9 @@ def collect_changelogs(data):
     version_number: list = data["app"]["version_number"]  # [0, 0, 0]
 
     # Get the list of changelog files
-    changelog_files = [f for f in os.listdir(OUTPUT_FOLDER) if f.endswith(data["app"]["atf_pattern"])]
+    changelog_files = [
+        f for f in os.listdir(OUTPUT_FOLDER) if f.endswith(data["app"]["atf_pattern"])
+    ]
 
     if len(changelog_files) == 0:
         print("No changelog files found. Exiting without changes.")
@@ -299,7 +300,7 @@ def collect_changelogs(data):
             future_changes.append(replaced_content.strip().capitalize())
         else:
             changes[a_type.upper()].append(replaced_content.strip().capitalize())
-    
+
         contributors.add(a_dev.strip())  # add this dev to the set of contributors
 
     # updatate the changelog config
@@ -311,15 +312,15 @@ def collect_changelogs(data):
     data = get_config(CONFIG_FILE)
 
     # gather the header and metadata for the changelog
-    try:        
+    try:
         context = {
             "version_number": v_num_str(version_number),
-            "date" : date(True),
-            "build_number":build_number,
+            "date": date(True),
+            "build_number": build_number,
             "contributors": ",".join(sorted(contributors)),
-            "logs": {x: y for x, y in changes.items() if y}
-                    }
-        
+            "logs": {x: y for x, y in changes.items() if y},
+        }
+
         LOG_FILE = OUTPUT_FOLDER / "log_store.json"
 
         with open(LOG_FILE, "r", encoding="utf-8") as fs:
@@ -328,24 +329,29 @@ def collect_changelogs(data):
         # collect future updates and store in log store
         if len(future_changes) > 0:
             f_count = data["app"]["f_count"] + 1
-            future_changes = [f"{f} - {x}" for f, x in enumerate(future_changes, start=f_count)]
+            future_changes = [
+                f"{f} - {x}" for f, x in enumerate(future_changes, start=f_count)
+            ]
             data["app"]["f_count"] = f_count + len(future_changes)
 
             # refresh_config data
             save_config(data, CONFIG_FILE)
             data = get_config(CONFIG_FILE)
-            
-            if "futures" not in log_store["doc_parts"] or log_store["doc_parts"]["futures"] is None:
+
+            if (
+                "futures" not in log_store["doc_parts"]
+                or log_store["doc_parts"]["futures"] is None
+            ):
                 log_store["doc_parts"]["futures"] = sorted(future_changes)
             else:
-                future_changes.extend(log_store["doc_parts"]["futures"])               
+                future_changes.extend(log_store["doc_parts"]["futures"])
                 log_store["doc_parts"]["futures"] = sorted(future_changes)
 
         old_logs = log_store["details"]
         old_logs.append(context)
-        
+
         sorted_logs = sorted(old_logs, key=lambda x: x["version_number"], reverse=True)
-        
+
         log_store["details"] = sorted_logs
 
         with open(LOG_FILE, "w", encoding="utf-8") as fs:
@@ -378,7 +384,7 @@ def generate_document():
     print(f"Generating Changelog File: {OUTPUT_FILE}")
 
     doc_footer = context["doc_parts"]["doc_footer"]
-    
+
     # build the header and metadata portion of the changelog
     try:
         temp_doc_header = context["doc_parts"]["doc_header"]
@@ -396,14 +402,14 @@ def generate_document():
 
     except Exception as e:
         print(f"Changelog FUTURES: Error: {e}")
-    
+
     # assemble the versions data & template of the changelog
     temp_ver_header = context["doc_parts"]["log_header"]
     temp_ver_details = context["doc_parts"]["log_details"]
 
     print(f"Changelog Version Templates: Successfully loaded.")
-    
-        # append the version header to the changelog
+
+    # append the version header to the changelog
     for ver in context["details"]:
         try:
             ver_context = {
@@ -413,21 +419,24 @@ def generate_document():
                 "contributors": ver["contributors"],
             }
             output += Template(temp_ver_header).render(**ver_context)
-            print(f"Changelog version header {ver['version_number']}: Successfully appended.")
-            
+            print(
+                f"Changelog version header {ver['version_number']}: Successfully appended."
+            )
+
             for a_type, a_list in ver["logs"].items():
-                output += Template(temp_ver_details).render(artifact_type=a_type, artifact_list=a_list)
+                output += Template(temp_ver_details).render(
+                    artifact_type=a_type, artifact_list=a_list
+                )
 
         except Exception as e:
             print(f"Changelog Versions  Error: {e}")
 
         print(f"Changelog version {ver['version_number']} Successfully created.")
 
-
-    try:    
+    try:
         # last line of the changelog
         output += doc_footer
-        
+
         print(f"Changelog Text: Successfully created.")
 
     except Exception as e:
@@ -439,7 +448,6 @@ def generate_document():
             f.write(output)
 
         print(f"Changelog updated: {OUTPUT_FILE}")
-
 
     except Exception as e:
         print(f"Error updating changelog: {e}")
@@ -453,7 +461,7 @@ def main():
         action="store_true",
         help="Collect existing changelogs and update the main changelog file",
     )
-    
+
     parser.add_argument(
         "-g",
         "--generate",

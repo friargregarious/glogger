@@ -16,27 +16,66 @@ Github: https://github.com/friargregarious/glogger
 
 ## Usage & initialization
 
-To use the changelog generator, simply run the ```chlog.py``` script or run it from the command prompt and follow the prompts.
+### create logs
+
+To use the changelog generator run it from the command line and follow the prompts.
 
 ```cmd
 c:\myproject>glog
 ```
 
-For collecting artifacts and building the changelog.md file, use the ```-c``` flag like so:
+If this is the first run, here is where you will be asked details about the app and the developer/contributor. Newly created changelog artifacts will be stored in ```c:\myproject\ch-logs\``` directory as ```c:\myproject\ch-logs\<date>.txt``` files. These can be opened and edited any time before being collected.
+
+*example:*
+
+```txt
+2024-09-24-18-09
+ADDED
+this is an example of a changelog artifact message for the updated README.md
+Gregory Denyes <Greg.Denyes@gmail.com>
+```
+
+### Collecting logs & Versioning
+
+For collecting artifacts and incrementing the current version, use the ```-c``` flag like so:
 
 ```cmd
 c:\myproject>glog -c
 ```
 
-*Note: runing from command prompt will be a future feature once the app packaging/building functionality is complete.*
+Any artifacts containing ```--r``` or ```--f``` will force increment **Major Release** or **Feature** versioning psuedo-Semantically. All existing artifacts will be processed and stored in ```c:\myproject\ch-logs\log_store.json```.
 
-Newly created changelog artifacts will be stored in ```ch-logs/``` directory as ```ch-logs/<date>.md``` files.
+### Generating Changelog.md
+
+Generate the changelog.md from the ```c:\myproject\ch-logs\log_store.json``` file by using the ```-g``` flag like so:
+
+```cmd
+c:\myproject>glog -g
+```
+
+Version details will be sorted by version, and all parts of the final Changelog will be output to ```c:\myproject\changelog.md```
 
 ## Configuration
 
-The tool uses a ```chlog.json``` file to store configuration data, including the application title, developer name, and developer link.
+The tool uses a ```glog.toml``` file to store configuration data, including the application title, developer name, and developer link.
 
 On first run, if this file and the configuration are not present, app will automatically begin asking for these details and save them to a newly created file.
+
+*example:*
+
+```toml
+[app]
+app_title = "GSLogger"
+version_number = [ 0, 2, 58,]
+build_number = 111
+f_count = 3
+atf_pattern = ".txt"
+
+[dev]
+developer = "Gregory Denyes"
+dev_email = "Greg.Denyes@gmail.com"
+dev_link = "https://github.com/friargregarious"
+```
 
 *Note: future features includes a re-calibrate command to update and change these settings if user wants to.*
 
