@@ -1,24 +1,21 @@
+[project]
+    name = "gslogger"
+    dynamic = ["version"]
+
 [build-system]
-#    requires = ["setuptools>=61.0.0", "setuptools-scm"]
     requires = ["setuptools>=61.0.0", "wheel"]
     build-backend = "setuptools.build_meta"
 
+[tools.setuptools]
+#    dependencies = ["toml", "jinja2"]
+    dependencies = ["toml>=0.10", "jinja2>=3.1"]
+
 [tool.setuptools.packages.find]
-    where = ["./gslogger*"]
+    where = ["gslogger"]
     include = ["*"]
 
 [tool.setuptools.dynamic]
-    version = {attr = "gslogger.__version__"}
-
-[project]
-    # This is the minimum version of Python that your project requires.
-    requires-python = ">= 3.10"
-
-    # built in for python 3.11 -> "tomllib; python_version >= '3.11'",
-    # "toml; python_version < '3.11'",
-    dependencies = ["toml", "jinja2",]
-
-    include_package_data = true
+    version = {attr = "glog.__version__"}
 
 [project.entry-points."console_scripts"]
     glog = "gslogger.glog:main"

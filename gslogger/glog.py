@@ -6,6 +6,9 @@ from jinja2 import Template
 import pathlib
 import toml
 
+from .version import __version__
+# __version__ = v_num_str(data["app"]["version_number"])
+
 
 # Get the current date and time
 def date(reporting=None) -> str:
@@ -144,8 +147,6 @@ if not os.path.exists(OUTPUT_FOLDER):
 
 CONFIG_FILE = PATH / "glog.toml"
 data = get_config(CONFIG_FILE)
-
-__version__ = v_num_str(data["app"]["version_number"])
 
 # make sure the artifact extension pattern is present
 if "atf_pattern" not in data["app"]:
