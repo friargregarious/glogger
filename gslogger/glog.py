@@ -19,6 +19,10 @@ def date(reporting=None) -> str:
     return datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
 
 
+def v_num_str(version):
+    return ".".join([str(x) for x in version])
+
+
 def save_config(data, target) -> None:
     """
     Saves the configuration to a file named "glog.toml".
@@ -141,6 +145,8 @@ if not os.path.exists(OUTPUT_FOLDER):
 CONFIG_FILE = PATH / "glog.toml"
 data = get_config(CONFIG_FILE)
 
+__version__ = v_num_str(data["app"]["version_number"])
+
 # make sure the artifact extension pattern is present
 if "atf_pattern" not in data["app"]:
     data["app"]["atf_pattern"] = ".txt"
@@ -251,10 +257,6 @@ def semantic_versioning(build, version, content):
         version[2] += 1
 
     return build, version
-
-
-def v_num_str(version):
-    return ".".join([str(x) for x in version])
 
 
 def collect_changelogs(data):

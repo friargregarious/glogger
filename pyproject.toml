@@ -1,57 +1,24 @@
 [build-system]
-    requires = ["setuptools", "wheel"]
+#    requires = ["setuptools>=61.0.0", "setuptools-scm"]
+    requires = ["setuptools>=61.0.0", "wheel"]
     build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+    where = ["./gslogger*"]
+    include = ["*"]
+
+[tool.setuptools.dynamic]
+    version = {attr = "gslogger.__version__"}
+
 [project]
-    name = "GSLogger"
-    dynamic = ["version"]    # version=".".join(str(x) for x in data['version_number']),
-    description="Greg's Simple Changelog Generator"
-    readme = {file = "README.md", content-type = "text/markdown"}
-
-    # What does your project relate to?
-    keywords = ["project", "changelog", "development"]
-
     # This is the minimum version of Python that your project requires.
-    requires-python = ">= 3.9"
+    requires-python = ">= 3.10"
 
     # built in for python 3.11 -> "tomllib; python_version >= '3.11'",
-    dependencies = [
-        "jinja2",
-        "tomli; python_version < '3.11'",
-        ]
+    # "toml; python_version < '3.11'",
+    dependencies = ["toml", "jinja2",]
 
     include_package_data = true
-
-    authors = [{name = "Gregory Denyes", email = "greg.denyes@gmailcom"},]
-    maintainers = [{name = "Gregory Denyes", email = "greg.denyes@gmailcom"},]
-
-    license = {file = "LICENSE"}
-
-    classifiers = [
-            # How mature is this project? Common values are
-            #   3 - Alpha
-            #   4 - Beta
-            #   5 - Production/Stable
-            "Development Status :: 3 - Alpha",
-            "Intended Audience :: Developers",
-            "Topic :: Software Development :: Project Tools",
-
-            # "License :: OSI Approved :: Apache Software License",
-            "License :: OSI Approved",
-            "Programming Language :: Python :: 3.9",
-            "Programming Language :: Python :: 3.10",
-            "Programming Language :: Python :: 3.11",
-            "Programming Language :: Python :: 3.12",
-    ]
-
-[project.urls]
-    Homepage = "https://github.com/friargregarious/glogger"
-    Repository = "https://github.com/friargregarious/glogger.git"
-    Documentation = "https://github.com/friargregarious/glogger/blob/main/README.md"
-    Issues = "https://github.com/friargregarious/glogger/issues"
-    Changelog = "https://github.com/friargregarious/glogger/blob/main/changelog.md"
-    Funding = "https://paypal.me/friargreg?country.x=CA&locale.x=en_US"
-    "Say Thanks!" = "https://mastodon.social/@gregarious"
 
 [project.entry-points."console_scripts"]
     glog = "gslogger.glog:main"

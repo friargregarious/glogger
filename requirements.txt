@@ -1,0 +1,6 @@
+# for packaging
+build>=1.2
+
+# for dependancies
+Jinja2>=3.1
+toml>=0.10
