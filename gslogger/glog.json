@@ -1,0 +1,34 @@
+{
+    "CHTYPES": [
+        "FUTURE UPDATES",
+        "ADDED",
+        "CHANGED",
+        "DELETED",
+        "REMOVED",
+        "FIXED",
+        "SECURITY"
+    ],
+    "app": {
+        "app_title": "GSLogger",
+        "atf_pattern": ".txt",
+        "build_number": 111,
+        "f_count": 3,
+        "version_number": [
+            0,
+            2,
+            58
+        ]
+    },
+    "dev": {
+        "dev_email": "Greg.Denyes@gmail.com",
+        "dev_link": "https://github.com/friargregarious",
+        "developer": "Gregory Denyes"
+    },
+    "paths": {
+        "CWD": "D:\\Development-personal\\glogger\\gslogger",
+        "DIR_OUTPUT": "D:\\Development-personal\\glogger\\gslogger\\ch-logs",
+        "FILE_CONFIG": "D:\\Development-personal\\glogger\\gslogger\\glog.json",
+        "FILE_LOG": "D:\\Development-personal\\glogger\\gslogger\\ch-logs\\log_store.json",
+        "FILE_OUTPUT": "D:\\Development-personal\\glogger\\gslogger\\ch-logs\\changelog.md"
+    }
+}

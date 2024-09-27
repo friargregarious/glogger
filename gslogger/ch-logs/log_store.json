@@ -12,7 +12,7 @@
     },
     "details": [
         {
-            "version_number": "0.2.58",
+            "version_number": [0, 2, 58],
             "date": "2024-09-24",
             "build_number": 111,
             "contributors": "Gregory Denyes <Greg.Denyes@gmail.com>",
@@ -29,7 +29,7 @@
             }
         },
         {
-            "version_number": "0.2.43",
+            "version_number": [0,2,43],
             "date": "2024-09-24",
             "build_number": 96,
             "contributors": "Gregory Denyes <Greg.Denyes@gmail.com>",
@@ -45,7 +45,7 @@
             }
         },
         {
-            "version_number": "0.2.3",
+            "version_number": [0,2,3],
             "date": "2024-09-20",
             "build_number": 56,
             "contributors": [
@@ -62,7 +62,7 @@
             }
         },
         {
-            "version_number": "0.2.15",
+            "version_number": [0,2,15],
             "date": "2024-09-20",
             "build_number": 68,
             "contributors": "Gregory Denyes <Greg.Denyes@gmail.com>",
@@ -77,7 +77,7 @@
             }
         },
         {
-            "version_number": "0.2.12",
+            "version_number": [0,2,12],
             "date": "2024-09-20",
             "build_number": 65,
             "contributors": "Gregory Denyes <Greg.Denyes@gmail.com>",
@@ -91,7 +91,7 @@
             }
         },
         {
-            "version_number": "0.1.2",
+            "version_number": [0,1,2],
             "date": "2024-09-20",
             "build_number": 36,
             "contributors": [
@@ -104,7 +104,7 @@
             }
         },
         {
-            "version_number": "0.1.0",
+            "version_number": [0,1,0],
             "date": "2024-09-19",
             "build_number": 25,
             "contributors": [
@@ -121,7 +121,7 @@
             }
         },
         {
-            "version_number": "0.0.12",
+            "version_number": [0,0,12],
             "date": "2024-09-19",
             "build_number": 12,
             "contributors": [

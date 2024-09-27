@@ -1,8 +1,10 @@
+from extras import load_json
 
-import toml
+with open("glog.json", "r", encoding="utf-8") as fs:
+    config_data = load_json(fs.read())
 
-with open("glog.toml", "r", encoding="utf-8") as toml_file:
-    config_data = toml.loads(toml_file.read())
+__version__ = "v" + ".".join(map(str, config_data["app"]["version_number"]))
 
-# __version__ = "0.2.58"
-__version__ = ".".join([str(x) for x in config_data["app"]["version_number"]])
+__author__ = config_data["dev"]["developer"]
+
+__author_email__ = config_data["dev"]["dev_email"]

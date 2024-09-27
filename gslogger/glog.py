@@ -1,189 +1,11 @@
 import os
-import datetime
-import argparse
-import json
-from jinja2 import Template
 import pathlib
-import toml
+import argparse
+# import jin
+from jin import fmt_det_lst, build_report
+from extras import load_json, save_json, date
 
-from .version import __version__
-# __version__ = v_num_str(data["app"]["version_number"])
-
-
-# Get the current date and time
-def date(reporting=None) -> str:
-    """
-    Returns the current date and time as a string in the format "YYYY-MM-DD-HH-MM"
-
-    :return: A string representing the current date and time
-    """
-    if reporting is not None:
-        return datetime.datetime.now().strftime("%Y-%m-%d")
-    return datetime.datetime.now().strftime("%Y-%m-%d-%H-%M")
-
-
-def v_num_str(version):
-    return ".".join([str(x) for x in version])
-
-
-def save_config(data, target) -> None:
-    """
-    Saves the configuration to a file named "glog.toml".
-
-    :param data: The configuration data to be saved
-    :return: None
-    """
-    try:
-        # with open(PATH / "glog.toml", "wb") as toml_file:
-        with open(target, "w") as toml_file:
-            toml.dump(data, toml_file)
-        print(f"save_config: Success saved {target}.")
-
-    except Exception as e:
-        print(f"save_config: Error saving glog.json: {e}")
-
-
-def get_config(src) -> dict:
-
-    try:
-        with open(src, "r", encoding="utf-8") as toml_file:
-            config_data = toml.loads(toml_file.read())
-            print(f"get_config: successfully loaded {src}")
-
-            return config_data
-
-    except Exception as e:
-        print(f"get_config: Error loading {src}: {e}")
-        print(f"get_config: rebuilding default config {src}.")
-
-        raw = {
-            "app": {
-                "version_number": [0, 0, 0],
-                "build_number": 0,
-            }
-        }
-
-        save_config(raw, src)
-
-        with open(CONFIG_FILE, "r", encoding="utf-8") as fs:
-            config_data = toml.loads(fs.read())
-
-        return config_data
-
-
-def get_template_files(template_folder):
-    """
-    Retrieves the template files, creating them if they do not exist.
-
-    :param template_folder: The folder where the template files are located
-    :return: A tuple containing the header and sections template text
-    """
-    SECTION_FILE = template_folder / "template_section.md"
-    HEADER_FILE = template_folder / "template_header.md"
-
-    # find/build template header ############
-
-    # # Changelog for Application: GSLogger
-    # Version: 0.2.3 | 2024-09-20 | Build: 20
-    # CONTRIBUTORS: Gregory Denyes
-
-    try:
-        with open(HEADER_FILE, "r") as fs:
-            header = fs.read()
-
-    except Exception as e:
-        print(f"failed to open header template, building file. Error:", e)
-
-        TEMPLATE_INTRO = "\n---\n# {{ title }}\n\nVersion: {{ version_number }} "
-        TEMPLATE_INTRO += "| {{ date }} | Build: {{ build_number }}\n\n"
-        TEMPLATE_INTRO += "CONTRIBUTORS: {{ contributors }}\n\n"
-        print("Changelog template.md not found. Creating file.")
-
-        with open(HEADER_FILE, "w") as f:
-            f.write(TEMPLATE_INTRO)
-
-        with open(HEADER_FILE, "r") as fs:
-            header = fs.read()
-
-    # Find/Build template sections ###########
-
-    # ## [ ADDED ]
-    # * this is a line of text under the added header.
-    # * added template check,...
-
-    if not os.path.exists(SECTION_FILE):
-        TEMPLATE_SECTIONS = "\n## [ {{ artifact_type }} ]\n\n{% for artifact in artifact_list %}   * {{ artifact }}\n{% endfor %}\n\n"
-        print("Changelog template_sections.md not found. Creating file.")
-
-        with open(SECTION_FILE, "w") as fs:
-            fs.write(TEMPLATE_SECTIONS)
-
-    with open(SECTION_FILE, "r") as fs:
-        sections = f.read()
-
-    return header, sections
-
-
-# Constants and templates ################################################
-CHTYPES = [
-    "FUTURE UPDATES",
-    "ADDED",
-    "CHANGED",
-    "DELETED",
-    "REMOVED",
-    "FIXED",
-    "SECURITY",
-]
-
-# get the current working directory
-PATH = pathlib.Path.cwd()
-
-# initialize local data for GLogger if not present
-OUTPUT_FOLDER = PATH / "ch-logs"  # Set the output folder
-
-# Create the output folder if it doesn't exist
-if not os.path.exists(OUTPUT_FOLDER):
-    os.makedirs(OUTPUT_FOLDER)
-
-CONFIG_FILE = PATH / "glog.toml"
-data = get_config(CONFIG_FILE)
-
-# make sure the artifact extension pattern is present
-if "atf_pattern" not in data["app"]:
-    data["app"]["atf_pattern"] = ".txt"
-
-# initialize app data ##################################################
-# get app_title from config, initialize if not present
-if "app_title" not in data["app"]:
-    data["app"]["app_title"] = input("What is the name for this application?\n> ")
-else:
-    app_title = data["app"]["app_title"]
-
-# initialize user data ##################################################
-# get developer from config, initialize if not present
-if "developer" not in data["dev"]:
-    data["dev"]["developer"] = input("Who is the developer?\n> ")
-else:
-    developer = data["dev"]["developer"]
-
-# get developer's link from config, initialize if not present
-if "dev_link" not in data["dev"]:
-    data["dev"]["dev_link"] = input("What is the developer's link?\n> ")
-else:
-    dev_link = data["dev"]["dev_link"]
-
-# get developer's email from config, initialize if not present
-if "dev_email" not in data["dev"]:
-    data["dev"]["dev_email"] = input("What is the developer's email address?\n> ")
-else:
-    dev_link = data["dev"]["dev_email"]
-
-# refresh or backup the config
-save_config(data, CONFIG_FILE)
-data = get_config(CONFIG_FILE)
-
-
-def create_artifact() -> None:
+def create_artifact(data:dict) -> None:
     """
     Prompts the user to create a new changelog artifact.
 
@@ -199,17 +21,16 @@ def create_artifact() -> None:
 
     :return: None
     """
-    os.system("cls")
 
     # get the changelog type
-    for i, a in enumerate(CHTYPES):
+    for i, a in enumerate(data['CHTYPES']):
         print(f"{i}. {a}")
 
     selection = int(input(f"Enter the log type: \n> ").strip())
-    if selection > len(CHTYPES) or selection < 0:
+    if selection > len(data['CHTYPES']) or selection < 0:
         print("Invalid selection, exiting without changes.")
         exit(1)
-    artifact_type = CHTYPES[selection]
+    artifact_type = data['CHTYPES'][selection]
 
     # Get the commit message from the user
     a_msg = "Enter the commit message"
@@ -223,7 +44,7 @@ def create_artifact() -> None:
 
     # Create the changelog file name
     artifact_file = (
-        f"{OUTPUT_FOLDER}/{date()}-{artifact_type}{data["app"]["atf_pattern"]}"
+        f"{data['paths']['DIR_OUTPUT']}/{date()}-{artifact_type}{data["app"]["atf_pattern"]}"
     )
     contrib_line = f"{data["dev"]['developer']} <{data["dev"]['dev_email']}>"
     # Create the changelog file
@@ -268,7 +89,7 @@ def collect_changelogs(data):
 
     # Get the list of changelog files
     changelog_files = [
-        f for f in os.listdir(OUTPUT_FOLDER) if f.endswith(data["app"]["atf_pattern"])
+        f for f in os.listdir(data["paths"]["DIR_OUTPUT"]) if f.endswith(data["app"]["atf_pattern"])
     ]
 
     if len(changelog_files) == 0:
@@ -280,24 +101,22 @@ def collect_changelogs(data):
 
     # # Create the new changelog content
     context = {}
-    changes = {x.upper(): [] for x in CHTYPES[1:]}
+    changes = {x.upper(): [] for x in data["CHTYPES"][1:]}
     future_changes = []
     contributors = set()
 
     # Iterate over the sorted changelog files
     for file in changelog_files:
         # Read the file content
-        with open(OUTPUT_FOLDER / file, "r") as f:
-            content = f.read()
-        _, a_type, a_msg, a_dev = content.splitlines()
+        with open(data["paths"]["DIR_OUTPUT"] / file, "r") as f:
+            _, a_type, a_msg, a_dev = f.read().splitlines()
 
         build_number, version_number = semantic_versioning(
-            build_number, version_number, content
+            build_number, version_number, a_msg
         )
 
-        replaced_content = a_msg.replace("--f", "new feature version").replace(
-            "--r", "new release version"
-        )
+        replaced_content = a_msg.replace("--f", "new FEATURE version")
+        replaced_content = a_msg.replace("--r", "new RELEASE version")
 
         if a_type == "FUTURE UPDATES":
             future_changes.append(replaced_content.strip().capitalize())
@@ -311,23 +130,21 @@ def collect_changelogs(data):
     data["app"]["version_number"] = version_number
 
     # refresh_config data
-    save_config(data, CONFIG_FILE)
-    data = get_config(CONFIG_FILE)
+    save_json(data, data["paths"]["FILE_CONFIG"] )
 
     # gather the header and metadata for the changelog
     try:
         context = {
-            "version_number": v_num_str(version_number),
-            "date": date(True),
+            "version_number": version_number,
+            "date": date(reporting=True),
             "build_number": build_number,
-            "contributors": ",".join(sorted(contributors)),
+            "contributors": ", ".join(sorted(contributors)),
             "logs": {x: y for x, y in changes.items() if y},
         }
 
-        LOG_FILE = OUTPUT_FOLDER / "log_store.json"
-
-        with open(LOG_FILE, "r", encoding="utf-8") as fs:
-            log_store = dict(json.loads(fs.read()))
+        # with open(data["paths"]["FILE_LOG"], "r", encoding="utf-8") as fs:
+        #     log_store = dict(json.loads(fs.read()))
+        log_store = load_json(data["paths"]["FILE_LOG"])
 
         # collect future updates and store in log store
         if len(future_changes) > 0:
@@ -338,8 +155,7 @@ def collect_changelogs(data):
             data["app"]["f_count"] = f_count + len(future_changes)
 
             # refresh_config data
-            save_config(data, CONFIG_FILE)
-            data = get_config(CONFIG_FILE)
+            save_json(data, data["paths"]["FILE_CONFIG"])
 
             if (
                 "futures" not in log_store["doc_parts"]
@@ -357,104 +173,127 @@ def collect_changelogs(data):
 
         log_store["details"] = sorted_logs
 
-        with open(LOG_FILE, "w", encoding="utf-8") as fs:
-            json.dump(log_store, fs, indent=4)
+        # with open(data["paths"]["FILE_LOG"], "w", encoding="utf-8") as fs:
+        #     json.dump(log_store, fs, indent=4)
+        save_json(log_store, data["paths"]["FILE_LOG"])
 
-        print(f"{LOG_FILE} successfully updated.")
+        print(f"{data['paths']['FILE_LOG']} successfully updated.")
 
         # remove old changelogs
         for file in changelog_files:
             # TODO: replace os.path with pathlib
-            os.remove(OUTPUT_FOLDER / file)
+            os.remove(data["paths"]["DIR_OUTPUT"] / file)
             print(f"Archived artifact {file} successfully removed.")
 
     except Exception as e:
-        print(f"Error updating {LOG_FILE}:", e)
+        print(f"Error updating {data['paths']['FILE_LOG']}:", e)
 
 
-def generate_document():
-    """
-    Generate the changelog text from the context data and write it to file.
+def build_initial(config:dict)->dict:
 
-    :param context: The data to populate the changelog template with
-    """
-    with open(OUTPUT_FOLDER / "log_store.json", "r") as fs:
-        context = dict(json.loads(fs.read()))
+    ##########################################################################
+    # PATH WORK ##############################################################
+    # get the current working directory
+    if "CWD" not in config["paths"]:
+        # todo: search for the config file within the current path tree
+        # then set the CWD to that path and move there.
+        config["paths"]["CWD"] = pathlib.Path.cwd()
+    
+    else:
+        # we should be working from the same directory as the config file
+        os.chdir(config["paths"]["CWD"])
 
-    # context.extend(dict(data))
+    # get the config path
+    if "FILE_CONFIG" not in config["paths"]:
+        config["paths"]["FILE_CONFIG"] = (config["paths"]["CWD"] / "glog.json").resolve()
 
-    OUTPUT_FILE = PATH / "changelog.md"
-    print(f"Generating Changelog File: {OUTPUT_FILE}")
+    # initialize the config if it doesn't exist
+    if not os.path.exists(config['paths']['FILE_CONFIG']):        
+        save_json(data=config, target=config['paths']['FILE_CONFIG'])
 
-    doc_footer = context["doc_parts"]["doc_footer"]
+    # load the config to memory
+    config.update ( load_json(config['paths']['FILE_CONFIG']) )
+                
+    # initialize local data folder for GLogger if not present
+    if "DIR_OUTPUT" not in config["paths"]:
+        config["paths"]["DIR_OUTPUT"] = config["paths"]["CWD"] / "ch-logs"
 
-    # build the header and metadata portion of the changelog
+    # Create the output folder if it doesn't exist
+    if not os.path.exists(config["DIR_OUTPUT"]):
+        os.makedirs(config["DIR_OUTPUT"])
+
+    # initialize changes log file if not present
+    if "FILE_LOG" not in config["paths"]:
+        config["paths"]["FILE_LOG"] = (config["paths"]["DIR_OUTPUT"] / "log_store.json").resolve()
+    
+    if not os.path.exists(config['paths']['FILE_LOG']):
+        save_json(data={}, target=config['paths']['FILE_LOG'])
+    
+    if 'FILE_OUTPUT' not in config['paths']:
+        config['paths']['FILE_OUTPUT'] = (config['paths']['DIR_OUTPUT'] / 'changelog.md').resolve()
+    
+    # not os.path.exists(config['paths']['FILE_LOG']): / "changelog.md"
+
+    ##########################################################################
+    # REPORTING CONSTANTS ####################################################
+    if "CHTYPES" not in config:
+        config["CHTYPES"] = [
+            "FUTURE UPDATES",
+            "ADDED",
+            "CHANGED",
+            "DELETED",
+            "REMOVED",
+            "FIXED",
+            "SECURITY",
+        ]
+
+    # make sure the artifact extension pattern is present
+    if "atf_pattern" not in config["app"]:
+        config["app"]["atf_pattern"] = ".txt"
+
+    ##########################################################################
+    # initialize app config ##################################################
+    # get app_title from config, initialize if not present
+    if "app_title" not in config["app"]:
+        config["app"]["version_number"] = [0,0,0]
+        config["app"]["build_number"] = 0
+        config["app"]["app_title"] = input("What is the name for this application?\n> ")
+
+
+    # initialize user config ##################################################
+    # get developer from config, initialize if not present
+    if "dev_name" not in config["dev"]:
+        config["dev"]["dev_name"] = input("Who is the developer?\n> ")
+
+    # get developer's link from config, initialize if not present
+    if "dev_link" not in config["dev"]:
+        config["dev"]["dev_link"] = input("What is the developer's link?\n> ")
+
+    # get developer's email from config, initialize if not present
+    if "dev_email" not in config["dev"]:
+        config["dev"]["dev_email"] = input("What is the developer's email address?\n> ")
+
+
+    return config
+
+def start_up():
+    # load the running configuration
     try:
-        temp_doc_header = context["doc_parts"]["doc_header"]
-        output = Template(temp_doc_header).render(**data["app"])
-        print(f"Changelog HEADER: Successfully created.")
-    except Exception as e:
-        print(f"Changelog HEADER: Error: {e}")
+        data = load_json(pathlib.Path.cwd() / "glog.json")
 
-    # FUTURES are details only found under the main heading
-    try:
-        temp_futures = context["doc_parts"]["futures_details"]
-        futures = context["doc_parts"]["futures"]
-        output += Template(temp_futures).render(artifact_list=futures)
-        print(f"Changelog FUTURES: Successfully created.")
+    except Exception as e:        
+        print(f"Error loading glog.json: {e}")
+        data = build_initial(  {
+               "paths":{
+                   "CWD": pathlib.Path.cwd(),
+                   },
+               })
+            
+        # refresh or backup the config
+        save_json(data, data["paths"]["FILE_CONFIG"])
 
-    except Exception as e:
-        print(f"Changelog FUTURES: Error: {e}")
-
-    # assemble the versions data & template of the changelog
-    temp_ver_header = context["doc_parts"]["log_header"]
-    temp_ver_details = context["doc_parts"]["log_details"]
-
-    print(f"Changelog Version Templates: Successfully loaded.")
-
-    # append the version header to the changelog
-    for ver in context["details"]:
-        try:
-            ver_context = {
-                "version_number": ver["version_number"],
-                "date": ver["date"],
-                "build_number": ver["build_number"],
-                "contributors": ver["contributors"],
-            }
-            output += Template(temp_ver_header).render(**ver_context)
-            print(
-                f"Changelog version header {ver['version_number']}: Successfully appended."
-            )
-
-            for a_type, a_list in ver["logs"].items():
-                output += Template(temp_ver_details).render(
-                    artifact_type=a_type, artifact_list=a_list
-                )
-
-        except Exception as e:
-            print(f"Changelog Versions  Error: {e}")
-
-        print(f"Changelog version {ver['version_number']} Successfully created.")
-
-    try:
-        # last line of the changelog
-        output += doc_footer
-
-        print(f"Changelog Text: Successfully created.")
-
-    except Exception as e:
-        print(f"Error adding footer: {e}")
-
-    try:
-        # Write the new changelog content to file
-        with open(OUTPUT_FILE, "w") as f:
-            f.write(output)
-
-        print(f"Changelog updated: {OUTPUT_FILE}")
-
-    except Exception as e:
-        print(f"Error updating changelog: {e}")
-
+    return data
+    
 
 def main():
     parser = argparse.ArgumentParser(description="Changelog generator")
@@ -471,17 +310,22 @@ def main():
         action="store_true",
         help="Generate Changelog file from collected data.",
     )
-
+    
     args = parser.parse_args()
+
+    data = start_up()
 
     if args.collect:
         collect_changelogs(data)
 
     elif args.generate:
-        generate_document()
-
+        try:
+            with open(data['paths']['FILE_OUTPUT'], "w", encoding="utf-8") as f:
+                f.write(build_report(data))
+        except Exception as e:
+            print(f"Error generating changelog: {e}")
     else:
-        create_artifact()
+        create_artifact(data)
 
 
 if __name__ == "__main__":
