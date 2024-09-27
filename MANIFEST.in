@@ -1,3 +1,0 @@
-graft gslogger
-include_package_data = true
-recursive-exclude __pycache__ *.py[cod]

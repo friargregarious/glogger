@@ -1,7 +1,10 @@
 .venv
 .junk
 
+.env
+
 dist/*
 GSLogger.egg-info/*
 build_msgs.txt
 
+*.py[cod]

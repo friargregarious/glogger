@@ -8,6 +8,13 @@ PyPi: https://pypi.org/project/GSLogger/0.1.0/
 and 
 Github: https://github.com/friargregarious/glogger
 
+## Urls
+
+- [Bug Reports / Issues](https://github.com/friargregarious/glogger/issues) : https://github.com/friargregarious/glogger/issues
+- [Funding / Buy me a coffee!](https://paypal.me/friargreg?country.x=CA&locale.x=en_US) : https://paypal.me/friargreg
+- [Say Hi or Thanks!](https://mastodon.social/@gregarious) : https://mastodon.social/@gregarious
+- [Source Code](https://github.com/friargregarious/glogger) : https://github.com/friargregarious/glogger
+
 ## Features
 
 * Automatically generates changelogs based on user input
