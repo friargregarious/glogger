@@ -54,6 +54,7 @@ para_dict["project"] = {
     "version" : __version__,
     "description" : "Greg's Simple Changelog Generator",
     "long_description" : README,
+    "long_description_content_type" : "text/markdown", 
     "keywords" : ["project", "changelog", "development"],
     "url" : "https://github.com/friargregarious/glogger",
     "requires_python" : '>=3.11.0,<4',
@@ -72,8 +73,10 @@ para_dict["project"] = {
 
 para_dict["project"]["classifiers"] = [
     "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3", 
     "Programming Language :: Python :: 3.11", 
     "Programming Language :: Python :: 3.12", 
+    "Operating System :: OS Independent",
     "License :: OSI Approved :: Apache Software License", 
     # f"License-file :: {str((here / 'LICENSE').resolve())}",
     # f"License-text :: {(here / 'LICENSE').read_text(encoding='utf-8')}",
