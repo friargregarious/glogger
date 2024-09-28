@@ -1,0 +1,4 @@
+2024-09-27-17-38-46
+FIXED
+generate_changelog was pulling the current version number for ALL version entries. changed this back to reading the stored version numbers.
+Gregory Denyes <Greg.Denyes@gmail.com>

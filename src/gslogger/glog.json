@@ -3,7 +3,6 @@
         "FUTURE UPDATES",
         "ADDED",
         "CHANGED",
-        "DELETED",
         "REMOVED",
         "FIXED",
         "SECURITY"
@@ -11,12 +10,12 @@
     "app": {
         "app_title": "GSLogger",
         "atf_pattern": ".txt",
-        "build_number": 111,
+        "build_number": 116,
         "f_count": 3,
         "version_number": [
             0,
             2,
-            58
+            63
         ]
     },
     "dev": {

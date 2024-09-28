@@ -1,8 +1,10 @@
-from extras import load_json, save_json, date
-
 # for the sake of my dumb ass not able to build my packages if they have
 # external dependencies. i am replaceing jinja2 as my templating engine
 # with this personalized hack of a package.
+
+from extras import load_json, save_json, date
+from version import __version__
+
 
 HEADER_DOC = "# CHANGELOG: {app_title}\n"
 HEADER_FUTURES = "\n## [ ISSUES & FUTURE CHANGES ]\n"
@@ -63,7 +65,7 @@ def build_report(data:dict)->str:
     # append the version header to the changelog
     for ver in log_store["details"]:
         ver_headers = {
-            "version_number": "v" + ".".join(map(str, ver["version_number"])),
+            "version_number": "v" + ".".join(map(str, ver["version_number"])), 
             "date": ver["date"],
             "build_number": ver["build_number"],
             "contributors": ver["contributors"],

@@ -1,4 +1,0 @@
-2024-09-27-16-40-40
-CHANGED
-rearranged code into extras.py, jin.py & version.py
-Gregory Denyes <Greg.Denyes@gmail.com>

@@ -108,7 +108,7 @@ def collect_changelogs(data):
     # Iterate over the sorted changelog files
     for file in changelog_files:
         # Read the file content
-        with open(data["paths"]["DIR_OUTPUT"] / file, "r") as f:
+        with open(pathlib.Path( data["paths"]["DIR_OUTPUT"] ) / file, "r") as f:
             _, a_type, a_msg, a_dev = f.read().splitlines()
 
         build_number, version_number = semantic_versioning(
@@ -182,7 +182,7 @@ def collect_changelogs(data):
         # remove old changelogs
         for file in changelog_files:
             # TODO: replace os.path with pathlib
-            os.remove(data["paths"]["DIR_OUTPUT"] / file)
+            os.remove(pathlib.Path(data["paths"]["DIR_OUTPUT"]) / file)
             print(f"Archived artifact {file} successfully removed.")
 
     except Exception as e:
@@ -197,7 +197,7 @@ def build_initial(config:dict)->dict:
     if "CWD" not in config["paths"]:
         # todo: search for the config file within the current path tree
         # then set the CWD to that path and move there.
-        config["paths"]["CWD"] = pathlib.Path.cwd()
+        config["paths"]["CWD"] = str(pathlib.Path.cwd())
     
     else:
         # we should be working from the same directory as the config file
@@ -205,7 +205,7 @@ def build_initial(config:dict)->dict:
 
     # get the config path
     if "FILE_CONFIG" not in config["paths"]:
-        config["paths"]["FILE_CONFIG"] = (config["paths"]["CWD"] / "glog.json").resolve()
+        config["paths"]["FILE_CONFIG"] = str(pathlib.Path(config["paths"]["CWD"]) / "glog.json")
 
     # initialize the config if it doesn't exist
     if not os.path.exists(config['paths']['FILE_CONFIG']):        
@@ -216,7 +216,7 @@ def build_initial(config:dict)->dict:
                 
     # initialize local data folder for GLogger if not present
     if "DIR_OUTPUT" not in config["paths"]:
-        config["paths"]["DIR_OUTPUT"] = config["paths"]["CWD"] / "ch-logs"
+        config["paths"]["DIR_OUTPUT"] = str(pathlib.Path(config["paths"]["CWD"]) / "ch-logs")
 
     # Create the output folder if it doesn't exist
     if not os.path.exists(config["DIR_OUTPUT"]):
@@ -224,13 +224,13 @@ def build_initial(config:dict)->dict:
 
     # initialize changes log file if not present
     if "FILE_LOG" not in config["paths"]:
-        config["paths"]["FILE_LOG"] = (config["paths"]["DIR_OUTPUT"] / "log_store.json").resolve()
+        config["paths"]["FILE_LOG"] = str(pathlib.Path(config["paths"]["DIR_OUTPUT"]) / "log_store.json")
     
     if not os.path.exists(config['paths']['FILE_LOG']):
-        save_json(data={}, target=config['paths']['FILE_LOG'])
+        save_json({}, config['paths']['FILE_LOG'])
     
     if 'FILE_OUTPUT' not in config['paths']:
-        config['paths']['FILE_OUTPUT'] = (config['paths']['DIR_OUTPUT'] / 'changelog.md').resolve()
+        config['paths']['FILE_OUTPUT'] =str(pathlib.Path(config['paths']['DIR_OUTPUT']) / 'changelog.md')
     
     # not os.path.exists(config['paths']['FILE_LOG']): / "changelog.md"
 
@@ -241,7 +241,6 @@ def build_initial(config:dict)->dict:
             "FUTURE UPDATES",
             "ADDED",
             "CHANGED",
-            "DELETED",
             "REMOVED",
             "FIXED",
             "SECURITY",
@@ -263,23 +262,28 @@ def build_initial(config:dict)->dict:
     # initialize user config ##################################################
     # get developer from config, initialize if not present
     if "dev_name" not in config["dev"]:
-        config["dev"]["dev_name"] = input("Who is the developer?\n> ")
+        if "Y" == input("Would you like to use your git config as the developer?\n (Y/N) > ").upper():
+            config["dev"]["dev_name"] = os.popen("git config user.name").read().strip()
+            config["dev"]["dev_email"] = os.popen("git config user.email").read().strip()
+            config["dev"]["dev_link"] = os.popen("git config remote.origin.url").read().strip()
 
-    # get developer's link from config, initialize if not present
-    if "dev_link" not in config["dev"]:
-        config["dev"]["dev_link"] = input("What is the developer's link?\n> ")
+        else:
+            config["dev"]["dev_name"] = input("Who is the developer?\n> ")
 
-    # get developer's email from config, initialize if not present
-    if "dev_email" not in config["dev"]:
-        config["dev"]["dev_email"] = input("What is the developer's email address?\n> ")
+            # get developer's email from config, initialize if not present
+            if "dev_email" not in config["dev"]:
+                config["dev"]["dev_email"] = input("What is the developer's email address?\n> ")
 
+            # get developer's link from config, initialize if not present
+            if "dev_link" not in config["dev"]:
+                config["dev"]["dev_link"] = input("What is the developer's link?\n> ")
 
     return config
 
 def start_up():
     # load the running configuration
     try:
-        data = load_json(pathlib.Path.cwd() / "glog.json")
+        data = load_json( pathlib.Path.cwd() / "glog.json" )
 
     except Exception as e:        
         print(f"Error loading glog.json: {e}")
