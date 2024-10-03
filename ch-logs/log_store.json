@@ -1,6 +1,84 @@
 {
     "details": [
         {
+            "build_number": 122,
+            "contributors": "Gregory Denyes <Greg.Denyes@gmail.com>",
+            "date": "2024-09-29",
+            "logs": {
+                "FIXED": [
+                    "I thought i fixed serializing paths... guess i was wrong. i hope it takes this time."
+                ]
+            },
+            "version_number": [
+                0,
+                2,
+                69
+            ]
+        },
+        {
+            "build_number": 121,
+            "contributors": "Gregory Denyes <Greg.Denyes@gmail.com>",
+            "date": "2024-09-29",
+            "logs": {
+                "REMOVED": [
+                    "Got rid of find_file. it was only used in one spot anyway."
+                ]
+            },
+            "version_number": [
+                0,
+                2,
+                68
+            ]
+        },
+        {
+            "build_number": 120,
+            "contributors": "Gregory Denyes <Greg.Denyes@gmail.com>",
+            "date": "2024-09-28",
+            "logs": {
+                "FIXED": [
+                    "Find_file function was stuck in loop if it can't find file. bad when trying to initialize."
+                ]
+            },
+            "version_number": [
+                0,
+                2,
+                67
+            ]
+        },
+        {
+            "build_number": 119,
+            "contributors": "Gregory Denyes <Greg.Denyes@gmail.com>",
+            "date": "2024-09-28",
+            "logs": {
+                "FIXED": [
+                    "Fixed the scripts line in pyproject.toml so that it will now build a proper executable and be available from command line"
+                ]
+            },
+            "version_number": [
+                0,
+                2,
+                66
+            ]
+        },
+        {
+            "build_number": 118,
+            "contributors": "Gregory Denyes <Greg.Denyes@gmail.com>",
+            "date": "2024-09-28",
+            "logs": {
+                "ADDED": [
+                    "First build to actually let me run from commandline"
+                ],
+                "FIXED": [
+                    "Generate_changelog was pulling the current version number for all version entries. changed this back to reading the stored version numbers."
+                ]
+            },
+            "version_number": [
+                0,
+                2,
+                65
+            ]
+        },
+        {
             "build_number": 116,
             "contributors": "Gregory Denyes <Greg.Denyes@gmail.com>",
             "date": "2024-09-27",

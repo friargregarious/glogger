@@ -1,11 +1,17 @@
 import os
-import pathlib
+# import pathlib
+from pathlib import Path
 import argparse
-# import jin
-from jin import fmt_det_lst, build_report
-from extras import load_json, save_json, date
 
-def create_artifact(data:dict) -> None:
+try:
+    from jin import build_report
+    from extras import load_json, save_json, date
+except:
+    from .jin import build_report
+    from .extras import load_json, save_json, date
+
+
+def create_artifact(data: dict) -> None:
     """
     Prompts the user to create a new changelog artifact.
 
@@ -23,14 +29,14 @@ def create_artifact(data:dict) -> None:
     """
 
     # get the changelog type
-    for i, a in enumerate(data['CHTYPES']):
+    for i, a in enumerate(data["CHTYPES"]):
         print(f"{i}. {a}")
 
     selection = int(input(f"Enter the log type: \n> ").strip())
-    if selection > len(data['CHTYPES']) or selection < 0:
+    if selection > len(data["CHTYPES"]) or selection < 0:
         print("Invalid selection, exiting without changes.")
         exit(1)
-    artifact_type = data['CHTYPES'][selection]
+    artifact_type = data["CHTYPES"][selection]
 
     # Get the commit message from the user
     a_msg = "Enter the commit message"
@@ -43,9 +49,7 @@ def create_artifact(data:dict) -> None:
         raise ValueError("Entry must be at least 10 characters long")
 
     # Create the changelog file name
-    artifact_file = (
-        f"{data['paths']['DIR_OUTPUT']}/{date()}-{artifact_type}{data["app"]["atf_pattern"]}"
-    )
+    artifact_file = f"{data['paths']['DIR_OUTPUT']}/{date()}-{artifact_type}{data["app"]["atf_pattern"]}"
     contrib_line = f"{data["dev"]['developer']} <{data["dev"]['dev_email']}>"
     # Create the changelog file
     try:
@@ -89,7 +93,9 @@ def collect_changelogs(data):
 
     # Get the list of changelog files
     changelog_files = [
-        f for f in os.listdir(data["paths"]["DIR_OUTPUT"]) if f.endswith(data["app"]["atf_pattern"])
+        f
+        for f in os.listdir(data["paths"]["DIR_OUTPUT"])
+        if f.endswith(data["app"]["atf_pattern"])
     ]
 
     if len(changelog_files) == 0:
@@ -108,7 +114,7 @@ def collect_changelogs(data):
     # Iterate over the sorted changelog files
     for file in changelog_files:
         # Read the file content
-        with open(pathlib.Path( data["paths"]["DIR_OUTPUT"] ) / file, "r") as f:
+        with open(Path(data["paths"]["DIR_OUTPUT"]) / file, "r") as f:
             _, a_type, a_msg, a_dev = f.read().splitlines()
 
         build_number, version_number = semantic_versioning(
@@ -130,7 +136,7 @@ def collect_changelogs(data):
     data["app"]["version_number"] = version_number
 
     # refresh_config data
-    save_json(data, data["paths"]["FILE_CONFIG"] )
+    save_json(data, data["paths"]["FILE_CONFIG"])
 
     # gather the header and metadata for the changelog
     try:
@@ -182,58 +188,60 @@ def collect_changelogs(data):
         # remove old changelogs
         for file in changelog_files:
             # TODO: replace os.path with pathlib
-            os.remove(pathlib.Path(data["paths"]["DIR_OUTPUT"]) / file)
+            os.remove(Path(data["paths"]["DIR_OUTPUT"]) / file)
             print(f"Archived artifact {file} successfully removed.")
 
     except Exception as e:
         print(f"Error updating {data['paths']['FILE_LOG']}:", e)
 
 
-def build_initial(config:dict)->dict:
+def build_initial(config: dict) -> dict:
 
     ##########################################################################
     # PATH WORK ##############################################################
     # get the current working directory
+
     if "CWD" not in config["paths"]:
         # todo: search for the config file within the current path tree
         # then set the CWD to that path and move there.
-        config["paths"]["CWD"] = str(pathlib.Path.cwd())
-    
+        config["paths"]["CWD"] = str(Path.cwd())
+
     else:
         # we should be working from the same directory as the config file
+        config["paths"]["CWD"] = str(Path.cwd())
         os.chdir(config["paths"]["CWD"])
 
     # get the config path
     if "FILE_CONFIG" not in config["paths"]:
-        config["paths"]["FILE_CONFIG"] = str(pathlib.Path(config["paths"]["CWD"]) / "glog.json")
-
+        config["paths"]["FILE_CONFIG"] = (Path(config["paths"]["CWD"]) / "glog.json").as_posix()
+        
     # initialize the config if it doesn't exist
-    if not os.path.exists(config['paths']['FILE_CONFIG']):        
-        save_json(data=config, target=config['paths']['FILE_CONFIG'])
+    if not os.path.exists(config["paths"]["FILE_CONFIG"]):
+        save_json(config, target=config["paths"]["FILE_CONFIG"])
 
     # load the config to memory
-    config.update ( load_json(config['paths']['FILE_CONFIG']) )
-                
+    config.update(load_json(config["paths"]["FILE_CONFIG"]))
+
     # initialize local data folder for GLogger if not present
     if "DIR_OUTPUT" not in config["paths"]:
-        config["paths"]["DIR_OUTPUT"] = str(pathlib.Path(config["paths"]["CWD"]) / "ch-logs")
-
+        config["paths"]["DIR_OUTPUT"] = (Path(config["paths"]["CWD"]) / "ch-logs").as_posix()
+        
     # Create the output folder if it doesn't exist
     if not os.path.exists(config["DIR_OUTPUT"]):
         os.makedirs(config["DIR_OUTPUT"])
 
     # initialize changes log file if not present
     if "FILE_LOG" not in config["paths"]:
-        config["paths"]["FILE_LOG"] = str(pathlib.Path(config["paths"]["DIR_OUTPUT"]) / "log_store.json")
-    
-    if not os.path.exists(config['paths']['FILE_LOG']):
-        save_json({}, config['paths']['FILE_LOG'])
-    
-    if 'FILE_OUTPUT' not in config['paths']:
-        config['paths']['FILE_OUTPUT'] =str(pathlib.Path(config['paths']['DIR_OUTPUT']) / 'changelog.md')
-    
-    # not os.path.exists(config['paths']['FILE_LOG']): / "changelog.md"
+        config["paths"]["FILE_LOG"] = (Path(config["paths"]["DIR_OUTPUT"]) / "log_store.json").as_posix()
 
+    if not os.path.exists(config["paths"]["FILE_LOG"]):
+        save_json({}, config["paths"]["FILE_LOG"])
+
+    if "FILE_OUTPUT" not in config["paths"]:
+        config["paths"]["FILE_OUTPUT"] = (Path(config["paths"]["CWD"]) / "changelog.md").as_posix()
+        
+    # not os.path.exists(config['paths']['FILE_LOG']): / "changelog.md"
+    
     ##########################################################################
     # REPORTING CONSTANTS ####################################################
     if "CHTYPES" not in config:
@@ -253,26 +261,31 @@ def build_initial(config:dict)->dict:
     ##########################################################################
     # initialize app config ##################################################
     # get app_title from config, initialize if not present
-    if "app_title" not in config["app"]:
-        config["app"]["version_number"] = [0,0,0]
+    if "app_title" not in config["app"] or config["app"]["app_title"] == "":
+        config["app"]["version_number"] = [0, 0, 0]
         config["app"]["build_number"] = 0
         config["app"]["app_title"] = input("What is the name for this application?\n> ")
-
 
     # initialize user config ##################################################
     # get developer from config, initialize if not present
     if "dev_name" not in config["dev"]:
-        if "Y" == input("Would you like to use your git config as the developer?\n (Y/N) > ").upper():
-            config["dev"]["dev_name"] = os.popen("git config user.name").read().strip()
-            config["dev"]["dev_email"] = os.popen("git config user.email").read().strip()
-            config["dev"]["dev_link"] = os.popen("git config remote.origin.url").read().strip()
+        response = "Y" == input( "Would you like to use your git config as the developer?\n (Y/N) > " ).upper()
+        if response:
+
+            for a, b in ( ("dev_name", "git config user.name"),
+                ("dev_email", "git config user.email"),
+                ("dev_link", "git config remote.origin.url"), ):
+
+                config["dev"][a] = os.popen(b).read().strip()
 
         else:
             config["dev"]["dev_name"] = input("Who is the developer?\n> ")
 
             # get developer's email from config, initialize if not present
             if "dev_email" not in config["dev"]:
-                config["dev"]["dev_email"] = input("What is the developer's email address?\n> ")
+                config["dev"]["dev_email"] = input(
+                    "What is the developer's email address?\n> "
+                )
 
             # get developer's link from config, initialize if not present
             if "dev_link" not in config["dev"]:
@@ -280,32 +293,45 @@ def build_initial(config:dict)->dict:
 
     return config
 
-def start_up():
+
+def start_up(working_dir):
     # load the running configuration
     try:
-        data = load_json( pathlib.Path.cwd() / "glog.json" )
+        data = load_json(working_dir / "glog.json")
 
-    except Exception as e:        
+    except Exception as e:
         print(f"Error loading glog.json: {e}")
-        data = build_initial(  {
-               "paths":{
-                   "CWD": pathlib.Path.cwd(),
-                   },
-               })
-            
+        data = build_initial(
+            {
+                "paths": {
+                    "CWD": working_dir,
+                },
+            }
+        )
+
         # refresh or backup the config
         save_json(data, data["paths"]["FILE_CONFIG"])
 
     return data
-    
+
 
 def main():
+    data = start_up(Path.cwd())
+
+
     parser = argparse.ArgumentParser(description="Changelog generator")
     parser.add_argument(
         "-c",
         "--collect",
         action="store_true",
-        help="Collect existing changelogs and update the main changelog file",
+        help="Collect existing changelogs and update the main changelog file.",
+    )
+
+    parser.add_argument(
+        "-t",
+        "--todo",
+        action="store_true",
+        help="Create a TODO list from existing FUTURES changelog artifacts.",
     )
 
     parser.add_argument(
@@ -314,18 +340,19 @@ def main():
         action="store_true",
         help="Generate Changelog file from collected data.",
     )
-    
+
     args = parser.parse_args()
 
-    data = start_up()
 
     if args.collect:
         collect_changelogs(data)
 
     elif args.generate:
         try:
-            with open(data['paths']['FILE_OUTPUT'], "w", encoding="utf-8") as f:
-                f.write(build_report(data))
+            target = Path(data["paths"]["CWD"])
+            # target.unlink()
+            (target / "changelog.md").write_text(build_report(data), encoding="utf-8")
+            print(f"Changelog generated: {target / 'changelog.md'}")
         except Exception as e:
             print(f"Error generating changelog: {e}")
     else:

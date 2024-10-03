@@ -1,10 +1,11 @@
 .venv
 .junk
-
-.env
+.pypirc
+.vscode
 
 dist/*
 GSLogger.egg-info/*
 build_msgs.txt
 
 *.py[cod]
+*.spec

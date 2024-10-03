@@ -2,8 +2,12 @@
 # external dependencies. i am replaceing jinja2 as my templating engine
 # with this personalized hack of a package.
 
-from extras import load_json, save_json, date
-from version import __version__
+try:
+    from extras import load_json
+    from version import __version__
+except:
+    from .extras import load_json
+    from .version import __version__
 
 
 HEADER_DOC = "# CHANGELOG: {app_title}\n"
@@ -14,7 +18,7 @@ HEADER_SECTION = "\n### [ {artifact_type} ]\n"
 FOOTER = "\n\n***This Changelog Maintained by [Greg's Simple Changelogger](https://github.com/friargregarious/glogger)***"
 
 
-def fmt_det_lst(det_list:list)->str:
+def fmt_det_lst(det_list: list) -> str:
     """
     Formats a list of strings into a markdown formatted list.
 
@@ -27,11 +31,11 @@ def fmt_det_lst(det_list:list)->str:
     det_txt = "\n"
     for txt in det_list:
         det_txt += f"- {txt.strip().capitalize()}\n"
-    
+
     return det_txt
 
 
-def build_report(data:dict)->str:
+def build_report(data: dict) -> str:
     """
     Builds a changelog report based on the provided data and configuration.
 
@@ -40,9 +44,9 @@ def build_report(data:dict)->str:
     :return: a string containing the MD formatted changelog report
     """
     output = ""
-    
+
     log_store = load_json(data["paths"]["FILE_LOG"])
-    
+
     print(f"Generating Changelog Text.")
 
     # build the header and metadata portion of the changelog
@@ -50,7 +54,9 @@ def build_report(data:dict)->str:
         output += HEADER_DOC.format(app_title=data["app"]["app_title"]).upper()
         print(f"Changelog formatting HEADER: Success!")
     except Exception as e:
-        print(f"Changelog formatting HEADER: Error: {e} app_title: {data['app']['app_title']}")
+        print(
+            f"Changelog formatting HEADER: Error: {e} app_title: {data['app']['app_title']}"
+        )
 
     # FUTURES are details only found under the main heading
     try:
@@ -65,13 +71,13 @@ def build_report(data:dict)->str:
     # append the version header to the changelog
     for ver in log_store["details"]:
         ver_headers = {
-            "version_number": "v" + ".".join(map(str, ver["version_number"])), 
+            "version_number": "v" + ".".join(map(str, ver["version_number"])),
             "date": ver["date"],
             "build_number": ver["build_number"],
             "contributors": ver["contributors"],
         }
         version_logs = ver["logs"]
-               
+
         try:
             output += HEADER_VERSION.format(**ver_headers)
             print(
@@ -95,6 +101,5 @@ def build_report(data:dict)->str:
 
     except Exception as e:
         print(f"Error adding footer: {e}")
-
 
     return output

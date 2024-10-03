@@ -10,12 +10,12 @@
     "app": {
         "app_title": "GSLogger",
         "atf_pattern": ".txt",
-        "build_number": 116,
+        "build_number": 122,
         "f_count": 3,
         "version_number": [
             0,
             2,
-            63
+            69
         ]
     },
     "dev": {
@@ -24,10 +24,10 @@
         "developer": "Gregory Denyes"
     },
     "paths": {
-        "CWD": "D:\\Development-personal\\glogger\\gslogger",
-        "DIR_OUTPUT": "D:\\Development-personal\\glogger\\gslogger\\ch-logs",
-        "FILE_CONFIG": "D:\\Development-personal\\glogger\\gslogger\\glog.json",
-        "FILE_LOG": "D:\\Development-personal\\glogger\\gslogger\\ch-logs\\log_store.json",
-        "FILE_OUTPUT": "D:\\Development-personal\\glogger\\gslogger\\ch-logs\\changelog.md"
+        "CWD": "D:\\Development-personal\\glogger",
+        "DIR_OUTPUT": "D:\\Development-personal\\glogger\\ch-logs",
+        "FILE_CONFIG": "D:\\Development-personal\\glogger\\glog.json",
+        "FILE_LOG": "D:\\Development-personal\\glogger\\ch-logs\\log_store.json",
+        "FILE_OUTPUT": "D:\\Development-personal\\glogger\\changelog.md"
     }
 }

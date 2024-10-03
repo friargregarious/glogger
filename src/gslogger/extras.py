@@ -1,17 +1,21 @@
+from pathlib import Path
 import json
 import datetime
 
+
 def date(reporting=None) -> str:
     """
-    Returns the current date and time as a string 
+    Returns the current date and time as a string
     format: "YYYY-MM-DD-HH-MM-SS" for filenames
             "YYYY-MM-DD"          for reporting.
-    
+
     :return: A string representing the current date and time
     """
     if reporting is not None:
         return datetime.datetime.now().strftime("%Y-%m-%d")
     return datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+
+
 
 
 def save_json(data, target) -> None:
@@ -24,13 +28,14 @@ def save_json(data, target) -> None:
     """
     try:
         with open(target, "w") as fs:
-            fs.write(json.dumps(data, indent=4, sort_keys=True))     
-            
+            fs.write(json.dumps(data, indent=4, sort_keys=True))
+
         print(f"SAVE_JSON: {target} saved successfully.")
 
     except Exception as e:
         raise Exception(f"SAVE_JSON: Error saving {target}: {e}")
         # print(f"SAVE_JSON: Error saving {target}: {e}")
+
 
 def load_json(src) -> dict:
     """
