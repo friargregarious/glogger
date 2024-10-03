@@ -2,6 +2,7 @@
 .junk
 .pypirc
 .vscode
+.env
 
 dist/*
 GSLogger.egg-info/*

@@ -1,12 +1,12 @@
 # GSLogger: Greg's Simple Changelog Generator
 
-A Python-based tool for generating changelogs in Markdown format.
-created by: [Friar Greg Denyes](https://github.com/friargregarious)
-Licensed under: Apache License Version 2.0
-Can be found at
-PyPi: https://pypi.org/project/GSLogger/0.1.0/ 
-and 
-Github: https://github.com/friargregarious/glogger
+- A Python-based tool for generating changelogs in Markdown format.
+- created by: [Friar Greg Denyes](https://github.com/friargregarious)
+- Licensed under: Apache License Version 2.0
+
+- app can be found at
+    - PyPi: https://pypi.org/project/GSLogger/0.1.0/ 
+    - Github: https://github.com/friargregarious/glogger
 
 ## Urls
 
@@ -50,38 +50,69 @@ For collecting artifacts and incrementing the current version, use the ```-c``` 
 c:\myproject>glog -c
 ```
 
-Any artifacts containing ```--r``` or ```--f``` will force increment **Major Release** or **Feature** versioning psuedo-Semantically. All existing artifacts will be processed and stored in ```c:\myproject\ch-logs\log_store.json```.
+Any artifacts containing ```--r``` or ```--f``` will force increment **Major Release** or **Feature** versioning psuedo-Semantically. All existing artifacts will be processed and stored in ```~myproject\ch-logs\log_store.json```.
 
 ### Generating Changelog.md
 
-Generate the changelog.md from the ```c:\myproject\ch-logs\log_store.json``` file by using the ```-g``` flag like so:
+Generate the changelog.md from the ```~myproject\ch-logs\log_store.json``` file by using the ```-g``` flag like so:
 
 ```cmd
 c:\myproject>glog -g
 ```
 
-Version details will be sorted by version, and all parts of the final Changelog will be output to ```c:\myproject\changelog.md```
+Version details will be sorted by version, and all parts of the final Changelog will be output to ```~myproject\changelog.md```
 
 ## Configuration
 
-The tool uses a ```glog.toml``` file to store configuration data, including the application title, developer name, and developer link.
+On first run, if this file and the configuration are not present, app will automatically begin asking for these details and save them to a newly created file. The tool uses a ```glog.json``` file to store the configuration:
 
-On first run, if this file and the configuration are not present, app will automatically begin asking for these details and save them to a newly created file.
+```json
+{
+    "CHTYPES": [
+        "FUTURE UPDATES",
+        "ADDED",
+        "CHANGED",
+        "REMOVED",
+        "FIXED",
+        "SECURITY"
+    ],
+    "app": {
+        "app_title": "GSLogger",
+        "atf_pattern": ".txt",
+        "build_number": 123,
+        "f_count": 3,
+        "version_number": [
+            0,
+            2,
+            70
+        ]
+    },
 
-*example:*
+```
 
-```toml
-[app]
-app_title = "GSLogger"
-version_number = [ 0, 2, 58,]
-build_number = 111
-f_count = 3
-atf_pattern = ".txt"
+This section contains your name and email for proper labelling of contributors to the changelog.
+when first initiating the app, you will be asked to either allow the app to pull from your git profile,
+or enter it manually.
 
-[dev]
-developer = "Gregory Denyes"
-dev_email = "Greg.Denyes@gmail.com"
-dev_link = "https://github.com/friargregarious"
+```json
+"dev": {
+        "dev_email": "Greg.Denyes@gmail.com",
+        "dev_link": "https://github.com/friargregarious",
+        "developer": "Gregory Denyes"
+    },
+```
+
+This section contains full paths to the files & folders that will be used by this tool.
+
+```json
+    "paths": {
+        "CWD": "",
+        "DIR_OUTPUT": "",
+        "FILE_CONFIG": "",
+        "FILE_LOG": "",
+        "FILE_OUTPUT": ""
+    }
+}
 ```
 
 *Note: future features includes a re-calibrate command to update and change these settings if user wants to.*

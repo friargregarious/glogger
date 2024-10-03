@@ -23,8 +23,6 @@ GLOGGER # This is your project directory
 └── pyproject.toml # this file contains package metadata
 """
 
-
-
 try:
     here = Path(__file__).parent.resolve()  # GLOGGER/
 
@@ -51,9 +49,6 @@ try:
 
     app_name = app_config["app"]["app_title"].lower()
 
-    # long description text
-    README = (here / "README.md").read_text(encoding="utf-8")
-
     # base build parameters
     para_dict = {
         "build-system": {
@@ -62,6 +57,16 @@ try:
         }
     }
 
+    # long description is found in the root of para_dict and not under [project]
+
+    # long description text
+    README = (here / "README.md").read_text(encoding="utf-8")
+
+    para_dict["long_description"] = README
+    para_dict["long_description_content_type"] = "text/markdown"
+
+
+    # building the [project] section
     para_dict["project"] = {
         "authors": [
             {
@@ -72,8 +77,7 @@ try:
         "name": app_name,
         "version": __version__,
         "description": "Greg's Simple Changelog Generator",
-        "long_description": README,
-        "long_description_content_type": "text/markdown",
+        "readme": {"file" : "README.md", "content-type" : "text/markdown"},
         "keywords": ["project", "changelog", "development"],
         "url": "https://github.com/friargregarious/glogger",
         "requires_python": ">=3.11.0,<4",

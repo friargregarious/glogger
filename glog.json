@@ -10,12 +10,12 @@
     "app": {
         "app_title": "GSLogger",
         "atf_pattern": ".txt",
-        "build_number": 122,
+        "build_number": 125,
         "f_count": 3,
         "version_number": [
             0,
             2,
-            69
+            72
         ]
     },
     "dev": {

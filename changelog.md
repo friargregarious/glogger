@@ -5,6 +5,22 @@
 - 1 - future updates will be included under doc header, before versions details.
 - 2 - need to package a new release as soon as output changelog is working
 
+## VERSION: v0.2.72 | 2024-10-03 | BUILD: 125
+
+### [ ADDED ]
+
+- Added a script for updating mastodon status per build
+
+### [ CHANGED ]
+
+- Updated readme to reflect json replacement of toml configs
+
+## VERSION: v0.2.70 | 2024-10-03 | BUILD: 123
+
+### [ CHANGED ]
+
+- Reconfigured some building metadata. pypi wasn't showing long description text
+
 ## VERSION: v0.2.69 | 2024-09-29 | BUILD: 122
 
 ### [ FIXED ]

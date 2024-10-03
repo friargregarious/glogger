@@ -1,6 +1,39 @@
 {
     "details": [
         {
+            "build_number": 125,
+            "contributors": "Gregory Denyes <Greg.Denyes@gmail.com>",
+            "date": "2024-10-03",
+            "logs": {
+                "ADDED": [
+                    "Added a script for updating mastodon status per build"
+                ],
+                "CHANGED": [
+                    "Updated readme to reflect json replacement of toml configs"
+                ]
+            },
+            "version_number": [
+                0,
+                2,
+                72
+            ]
+        },
+        {
+            "build_number": 123,
+            "contributors": "Gregory Denyes <Greg.Denyes@gmail.com>",
+            "date": "2024-10-03",
+            "logs": {
+                "CHANGED": [
+                    "Reconfigured some building metadata. pypi wasn't showing long description text"
+                ]
+            },
+            "version_number": [
+                0,
+                2,
+                70
+            ]
+        },
+        {
             "build_number": 122,
             "contributors": "Gregory Denyes <Greg.Denyes@gmail.com>",
             "date": "2024-09-29",

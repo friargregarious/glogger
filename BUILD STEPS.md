@@ -9,6 +9,17 @@ In this guide, we will walk through the process of building and distributing a P
 3. How to use the python environment
 4. Building with hatchling
 5. Uploading to pypi
+6. References
+
+## 0. The Short version
+
+Everytime I want to build a new version of my app, these are the steps.
+
+1. run: `~/my_build_config.py`          # this will generate the configuration files
+2. commit changes to git and github     # this will update the github repo
+3. run: `hatchling build`               # this will build the package files
+4. run: `twine upload dist/vn.n.n/*`    # this will upload the package to pypi
+5. run: `mastodon.py`                   # this will post an update status to mastodon
 
 ## 1. Directory Structure
 
@@ -142,3 +153,13 @@ the command line is:
 ```
 
 I want to make a script that will upload my app to pypi but from the latest build folder.
+
+
+## 6. References & Links
+
+- pypi.org <https://pypi.org/>
+- hatchling <https://hatch.pypa.io/>
+- twine <https://pypi.org/project/twine/>
+- python-package-guide <https://www.pyopensci.org/python-package-guide/tutorials/installable-code.html>
+- hatch config https://hatch.pypa.io/1.9/config/build/
+- 
